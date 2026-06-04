@@ -1,25 +1,26 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# ── Root .gitignore (frontend/ and backend/ have their own as well) ──────────
 
-node_modules
-dist
-dist-ssr
-*.local
-coverage
+# Dependencies / build caches that may leak into the repo root
+/node_modules
+/package-lock.json   # orphaned root lockfile — the real one lives in frontend/
+.vite/
+dist/
 
-# Editor directories and files
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+
+# Local Claude Code settings (machine-specific permissions)
+.claude/settings.local.json
+
+# Stray OpenSSL seed file
+**/.rnd
+
+# ── Private / beneficiary data — NEVER commit to a public template repo ──────
+# Source research brief contains personal information about the beneficiary.
+Adas_research.docx
+*.research.docx
