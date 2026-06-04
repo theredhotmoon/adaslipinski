@@ -1,0 +1,49 @@
+<script setup lang="ts">
+import { ref, inject, computed } from 'vue'
+import type { Ref } from 'vue'
+import AdminAdd from '@/features/admin/components/AdminAdd.vue'
+import AdminDelete from '@/features/admin/components/AdminDelete.vue'
+import AdminFormModal from '@/features/admin/components/AdminFormModal.vue'
+import { useCreatePartner, useDeletePartner } from '@/features/admin/useCmsApi'
+import { dt } from '../desktopTheme'
+import { data as staticData } from '../../data'
+import type { SiteContent } from '../../types'
+const { c } = dt
+
+const siteData = inject<Ref<SiteContent>>('siteData')
+const partners = computed(() => siteData?.value?.partners ?? staticData.partners.map((name, i) => ({ id: i + 1, name })) as any)
+
+const { mutate: createPartner, isPending: creating } = useCreatePartner()
+const { mutate: deletePartner } = useDeletePartner()
+
+const showAdd = ref(false)
+const newName = ref('')
+function submit() {
+  if (!newName.value) return
+  createPartner({ name: newName.value }, {
+    onSuccess: () => { showAdd.value = false; newName.value = '' }
+  })
+}
+</script>
+<template>
+  <div class="flex gap-3 flex-wrap items-center justify-center">
+    <div
+      v-for="p in partners"
+      :key="p.id ?? p.name"
+      :style="{ padding: '13px 22px', background: c.surface, border: `1px solid ${c.line}`, borderRadius: '12px', fontWeight: 800, fontSize: '15.5px', color: c.ink, display: 'flex', alignItems: 'center', gap: '10px' }"
+    >
+      {{ typeof p === 'string' ? p : p.name }}
+      <AdminDelete v-if="p.id" label="partnera" @click="deletePartner(p.id)" />
+    </div>
+    <div class="max-w-[200px]">
+      <AdminAdd label="Dodaj partnera" @click="showAdd = true" />
+    </div>
+
+    <AdminFormModal title="Dodaj partnera" :open="showAdd" :saving="creating" @close="showAdd = false" @save="submit">
+      <label class="block">
+        <span class="text-xs font-bold text-gray-500 mb-1 block">Nazwa</span>
+        <input v-model="newName" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
+      </label>
+    </AdminFormModal>
+  </div>
+</template>
