@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+
+cd /var/www
+
+# Laravel requires .env to exist even if all values come from Docker env vars
+touch .env
+
+# Run composer post-install scripts (package:discover etc.)
+composer run-script post-autoload-dump 2>/dev/null || true
+
+# Run migrations
+php artisan migrate --force --no-interaction
+
+# Generate Passport keys into /var/www/passport-keys (configured via AppServiceProvider).
+# --force ensures valid 600-permission keys exist on every fresh container.
+php artisan passport:keys --force --no-interaction 2>/dev/null || true
+# Keys are written as root here, but php-fpm runs as www-data — hand them over so
+# the worker can read the private key (kept at 600, which oauth2-server accepts).
+chown -R www-data:www-data /var/www/passport-keys
+
+# Cache config and routes for performance
+php artisan config:cache --no-interaction 2>/dev/null || true
+php artisan route:cache --no-interaction 2>/dev/null || true
+
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

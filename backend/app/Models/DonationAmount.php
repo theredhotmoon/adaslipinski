@@ -1,0 +1,11 @@
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
+class DonationAmount extends Model {
+    protected $fillable = ['amount_pln', 'sort_order', 'active'];
+    protected $casts = ['amount_pln' => 'integer', 'sort_order' => 'integer', 'active' => 'boolean'];
+
+    public function scopeActive($query) { return $query->where('active', true); }
+    public function scopeOrdered($query) { return $query->orderBy('sort_order'); }
+}

@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: adas-lipinski-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./database/database.sqlite:/var/www/database/database.sqlite
+      - ./storage:/var/www/storage
+    environment:
+      # Secrets & per-deployment values are read from backend/.env (gitignored).
+      # Run `php artisan key:generate` once, then set ADMIN_EMAILS in backend/.env.
+      - APP_KEY=${APP_KEY}
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=http://localhost:8000
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/database/database.sqlite
+      - SESSION_DRIVER=file
+      - CACHE_STORE=file
+      - QUEUE_CONNECTION=sync
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
+      - ADMIN_EMAILS=${ADMIN_EMAILS:-admin@example.com}
+    restart: unless-stopped
