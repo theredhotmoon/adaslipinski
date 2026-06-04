@@ -2,7 +2,8 @@
 
 # Dependencies / build caches that may leak into the repo root
 /node_modules
-/package-lock.json   # orphaned root lockfile — the real one lives in frontend/
+# orphaned root lockfile — the real one lives in frontend/
+/package-lock.json
 .vite/
 dist/
 
