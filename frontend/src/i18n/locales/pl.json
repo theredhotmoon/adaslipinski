@@ -1,0 +1,41 @@
+{
+  "lang": {
+    "pl": "Polski",
+    "en": "English",
+    "switch": "Zmień język"
+  },
+  "nav": {
+    "home": "Start",
+    "about": "O {name}",
+    "budget": "Na co",
+    "progress": "Postępy",
+    "expenses": "Wydatki",
+    "tax": "Podatek",
+    "foundation": "Fundacja",
+    "contact": "Kontakt",
+    "more": "Więcej"
+  },
+  "donate": {
+    "cta": "Wpłać BLIK-iem",
+    "ctaBar": "💛 Wpłać teraz",
+    "now": "Wpłać teraz",
+    "once": "Jednorazowo",
+    "monthly": "Co miesiąc",
+    "amount": "Kwota",
+    "custom": "Inna kwota",
+    "confirm": "Potwierdź wpłatę"
+  },
+  "common": {
+    "close": "Zamknij",
+    "back": "Wstecz",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano",
+    "loading": "Ładowanie…",
+    "save": "Zapisz",
+    "cancel": "Anuluj"
+  },
+  "hero": {
+    "kicker": "💛 Razem damy radę",
+    "title": "{name}, {age} lat. Walczymy o każdy ruch."
+  }
+}

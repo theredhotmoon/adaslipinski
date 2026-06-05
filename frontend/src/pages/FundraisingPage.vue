@@ -8,6 +8,7 @@ import FrBottomNav from '@/features/fundraising/components/FrBottomNav.vue'
 import FrDonateBar from '@/features/fundraising/components/FrDonateBar.vue'
 import FrMoreSheet from '@/features/fundraising/components/FrMoreSheet.vue'
 import FrDonateModal from '@/features/fundraising/components/FrDonateModal.vue'
+import FrLangSwitcher from '@/features/fundraising/components/FrLangSwitcher.vue'
 import FrHomeScreen from '@/features/fundraising/screens/FrHomeScreen.vue'
 import FrAboutScreen from '@/features/fundraising/screens/FrAboutScreen.vue'
 import FrBudgetScreen from '@/features/fundraising/screens/FrBudgetScreen.vue'
@@ -76,6 +77,11 @@ function openDonate(payload: { amount: number; freq: 'once' | 'monthly'; item?: 
       position: 'relative',
     }"
   >
+    <!-- Floating language switcher -->
+    <div :style="{ position: 'absolute', top: '10px', right: '10px', zIndex: 70 }">
+      <FrLangSwitcher />
+    </div>
+
     <!-- Scrollable content -->
     <div
       ref="screenEl"
