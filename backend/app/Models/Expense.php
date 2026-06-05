@@ -1,8 +1,12 @@
 <?php
 namespace App\Models;
+use App\Casts\Translatable;
 use Illuminate\Database\Eloquent\Model;
 
 class Expense extends Model {
     protected $fillable = ['expense_date', 'description', 'amount_pln', 'vendor', 'invoice_url', 'has_invoice'];
-    protected $casts = ['expense_date' => 'date', 'amount_pln' => 'integer', 'has_invoice' => 'boolean'];
+    protected $casts = [
+        'expense_date' => 'date', 'amount_pln' => 'integer', 'has_invoice' => 'boolean',
+        'description' => Translatable::class, 'vendor' => Translatable::class,
+    ];
 }

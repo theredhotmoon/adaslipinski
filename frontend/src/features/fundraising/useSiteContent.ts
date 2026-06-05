@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/vue-query'
+import { useI18n } from 'vue-i18n'
 import { api } from '@/lib/api'
 import { data as staticData, theme } from './data'
 import type { SiteContent } from './types'
@@ -62,9 +63,13 @@ const fallback: SiteContent = {
 }
 
 export function useSiteContent() {
+  const { locale } = useI18n()
+
   return useQuery<SiteContent>({
-    queryKey: ['cms-site'],
-    queryFn: () => api.get('/cms/site').then(r => r.data),
+    // `locale` is a ref — including it makes the key reactive, so switching
+    // language refetches the content in the new locale (and caches per locale).
+    queryKey: ['cms-site', locale],
+    queryFn: () => api.get('/cms/site', { params: { lang: locale.value } }).then(r => r.data),
     // placeholderData (not initialData) shows the static fallback instantly while
     // ALWAYS fetching live CMS content — otherwise initialData + staleTime would
     // make the query treat the hardcoded fallback as fresh and skip the refetch.
