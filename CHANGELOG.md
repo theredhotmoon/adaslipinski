@@ -26,6 +26,11 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 - Central rebrandable site config (`frontend/src/config/site.ts`): one source of
   truth for identity, foundation, bank details, contact, donations, currency,
   and available locales.
+- Bilingual CMS content (PL/EN): a tolerant `Translatable` JSON cast stores
+  text per locale, a `SetLocale` middleware resolves `GET /cms/site?lang=`, and
+  the frontend refetches content per locale. Inline admin edits update the
+  currently-displayed language and preserve the other. Bilingual demo content
+  seeded for budget, milestones, progress, expenses, FAQ, hero, and testimonial.
 
 ### Changed
 - CORS now defaults to the configured `FRONTEND_URL` instead of `*`
@@ -43,8 +48,7 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
   (`storage/*.key`) remain untracked.
 
 ### Planned
-- Migrate remaining UI strings across screens/components to i18n locale keys.
-- Full bilingual CMS *content* via a per-locale backend schema and a
-  locale-aware `GET /cms/site?lang=` endpoint.
+- Migrate remaining hardcoded UI strings across screens/components (and the
+  desktop layouts) to i18n locale keys, and add the language switcher to desktop.
 - Optional Tolgee sync (cloud free tier or self-hosted) layered over the local
   locale files, plus the Tolgee MCP server for AI-assisted translation.
