@@ -1,0 +1,41 @@
+{
+  "lang": {
+    "pl": "Polski",
+    "en": "English",
+    "switch": "Change language"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About {name}",
+    "budget": "Goals",
+    "progress": "Updates",
+    "expenses": "Expenses",
+    "tax": "Tax",
+    "foundation": "Foundation",
+    "contact": "Contact",
+    "more": "More"
+  },
+  "donate": {
+    "cta": "Donate with BLIK",
+    "ctaBar": "💛 Donate now",
+    "now": "Donate now",
+    "once": "One-time",
+    "monthly": "Monthly",
+    "amount": "Amount",
+    "custom": "Other amount",
+    "confirm": "Confirm donation"
+  },
+  "common": {
+    "close": "Close",
+    "back": "Back",
+    "copy": "Copy",
+    "copied": "Copied",
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "hero": {
+    "kicker": "💛 Together we can do it",
+    "title": "{name}, age {age}. Fighting for every movement."
+  }
+}

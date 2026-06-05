@@ -1,8 +1,13 @@
+import { siteConfig } from '@/config/site'
+
+// Identity/branding fields come from the central, rebrandable site config.
+// The Polish strings below are fallback *content* (the live copy comes from the
+// CMS API and, going forward, the i18n locale files).
 export const data = {
   child: {
-    name: 'Adaś',
-    fullName: 'Adam Lipiński',
-    age: 5,
+    name: siteConfig.beneficiary.name,
+    fullName: siteConfig.beneficiary.fullName,
+    age: siteConfig.beneficiary.age,
     diagnosis: 'mózgowe porażenie dziecięce, postać czterokończynowa (tetraplegia spastyczna)',
     diagnosisShort: 'mózgowe porażenie dziecięce',
     diagnosisPlain: 'Adaś nie chodzi i z trudem panuje nad rękami. Każdy ruch wypracowuje godzinami rehabilitacji.',
@@ -54,35 +59,27 @@ export const data = {
     { q: 'Czy mogę wpłacać co miesiąc?', a: 'Tak — to dla nas najważniejsze. BLIK Powtarzalny lub karta cykliczna: zgodę potwierdzasz raz, a wpłaty idą automatycznie. W każdej chwili możesz je zatrzymać.' },
   ],
 
-  partners: ['I love rolki', 'Hedonskate', 'Intruz'],
+  partners: [...siteConfig.partners],
 
   foundation: {
-    name: 'Fundacja Pomocy Osobom Niepełnosprawnym „Słoneczko"',
-    krs: '0000186434',
-    nip: '778-14-13-541',
-    regon: '634579440',
-    cel: 'Adam Lipiński 433/L',
-    address: 'ul. Słoneczna 12, 60-001 Poznań',
-    web: 'fundacja-sloneczko.pl',
-    blikPhone: '555 100 433',
-    accounts: [
-      { cur: 'PLN', iban: 'PL58 1090 1014 0000 0001 4567 433L' },
-      { cur: 'EUR', iban: 'PL12 1090 1014 0000 0002 1133 433L' },
-      { cur: 'USD', iban: 'PL77 1090 1014 0000 0003 9921 433L' },
-    ],
-    links: [
-      { label: 'Profil w rejestrze KRS', href: '#' },
-      { label: 'Sprawozdania OPP (baza NIW)', href: '#' },
-      { label: 'Strona Fundacji „Słoneczko"', href: '#' },
-    ],
+    name: siteConfig.foundation.name,
+    krs: siteConfig.foundation.krs,
+    nip: siteConfig.foundation.nip,
+    regon: siteConfig.foundation.regon,
+    cel: siteConfig.foundation.purpose,
+    address: siteConfig.foundation.address,
+    web: siteConfig.foundation.web,
+    blikPhone: siteConfig.foundation.blikPhone,
+    accounts: siteConfig.foundation.accounts.map((a) => ({ ...a })),
+    links: siteConfig.foundation.links.map((l) => ({ ...l })),
   },
 
   contact: {
-    email: 'kontakt@adaslipinski.pl',
-    phone: '+48 555 100 433',
+    email: siteConfig.contact.email,
+    phone: siteConfig.contact.phone,
   },
 
-  amounts: [20, 50, 100, 200],
+  amounts: [...siteConfig.donation.amounts],
 }
 
 export const theme = {
@@ -122,5 +119,5 @@ export type Theme = typeof theme
 export type ThemeColors = typeof theme.c
 
 export function zl(n: number): string {
-  return n.toLocaleString('pl-PL') + ' zł'
+  return n.toLocaleString(siteConfig.currency.intlLocale) + ' ' + siteConfig.currency.suffix
 }

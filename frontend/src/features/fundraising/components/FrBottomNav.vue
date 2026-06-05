@@ -1,18 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrIcon from './FrIcon.vue'
+import { siteConfig } from '@/config/site'
 import { theme } from '../data'
 const { c } = theme
+const { t } = useI18n()
 
 defineProps<{ active: string }>()
 const emit = defineEmits<{ nav: [string]; more: [] }>()
 
-const items = [
-  { k: 'home', l: 'Start', icon: 'home' },
-  { k: 'about', l: 'O Adasiu', icon: 'heart' },
-  { k: 'budget', l: 'Na co', icon: 'chart' },
-  { k: 'progress', l: 'Postępy', icon: 'news' },
-  { k: 'more', l: 'Więcej', icon: 'more' },
-]
+const items = computed(() => [
+  { k: 'home', l: t('nav.home'), icon: 'home' },
+  { k: 'about', l: t('nav.about', { name: siteConfig.beneficiary.name }), icon: 'heart' },
+  { k: 'budget', l: t('nav.budget'), icon: 'chart' },
+  { k: 'progress', l: t('nav.progress'), icon: 'news' },
+  { k: 'more', l: t('nav.more'), icon: 'more' },
+])
 </script>
 
 <template>
