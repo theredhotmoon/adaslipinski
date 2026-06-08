@@ -1,9 +1,12 @@
 <?php
 namespace App\Models;
 use App\Casts\Translatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Testimonial extends Model {
+    use HasFactory;
+
     protected $fillable = ['quote_text', 'author_name', 'author_role', 'photo_id', 'active'];
     protected $casts = [
         'active' => 'boolean',

@@ -5,7 +5,7 @@ import en from './locales/en.json'
 
 const STORAGE_KEY = 'locale'
 
-function initialLocale(): LocaleCode {
+export function initialLocale(): LocaleCode {
   const saved = localStorage.getItem(STORAGE_KEY) as LocaleCode | null
   if (saved && siteConfig.availableLocales.includes(saved)) return saved
 

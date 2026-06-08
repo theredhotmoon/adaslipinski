@@ -7,6 +7,12 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Test suites: backend PHPUnit (Translatable cast, locale-aware `/cms/site`,
+  auth/login whitelist, protected routes, admin CRUD incl. per-locale writes,
+  health) and frontend Vitest (i18n, axios interceptor, `useSiteContent`,
+  `FrLangSwitcher`, config). Model factories for all domain models, a
+  `SetsUpPassport` test trait, and a GitHub Actions CI workflow
+  (`.github/workflows/ci.yml`). `/ship` now gates merges on a green suite.
 - Open-source project scaffolding: root `README.md` (overview, quickstart,
   config table, security notes), `LICENSE` (MIT), and `CHANGELOG.md`.
 - Environment templates documenting app-specific config: `backend/.env.example`
@@ -37,6 +43,12 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
   (override via `CORS_ALLOWED_ORIGINS`).
 - `docker-compose.yml` reads `APP_KEY`, `FRONTEND_URL`, and `ADMIN_EMAILS` from
   the environment instead of hardcoded values.
+
+### Fixed
+- Admin route-model binding for the `faq` and `progress` API resources: the
+  controller parameters (`$faqItem`, `$progressPost`) didn't match the route
+  parameter names, so inline FAQ/progress edits and deletes silently hit an
+  empty model. Route parameters are now bound explicitly. (Caught by new tests.)
 
 ### Security
 - Removed the hardcoded Laravel `APP_KEY` and a personal admin email from

@@ -13,7 +13,14 @@ MR/PR → merge. Be careful and **confirm before any irreversible/outward step**
    - Write a tight, human summary: what changed and why, grouped by area
      (backend / frontend / infra / docs).
 
-2. **Language-aware review** — detect changed file types and run the matching
+2. **Test gate (blocking)** — run the suites and STOP on any failure:
+   - Backend: `cd backend && php vendor/bin/phpunit` (note: `php artisan test`
+     is not registered in this project — collision is in `dont-discover`).
+   - Frontend: `cd frontend && npm run test` and `npm run type-check`.
+   - A red suite or type error is a 🔴 and blocks the ship — fix before merging.
+   - New behaviour in this diff with no test added is also a 🔴: write the test.
+
+3. **Language-aware review** — detect changed file types and run the matching
    review skills, then surface findings (🔴 must-fix block the ship):
    - `*.php` → `/review-php`
    - `*.ts`/`*.tsx` → `/review-ts`
@@ -22,14 +29,14 @@ MR/PR → merge. Be careful and **confirm before any irreversible/outward step**
    - Also run `/code-review` for cross-cutting correctness.
    - Fix 🔴 issues (or list them and stop if they need a decision).
 
-3. **Update `CHANGELOG.md`** (Keep a Changelog format, newest on top):
+4. **Update `CHANGELOG.md`** (Keep a Changelog format, newest on top):
    - Add/extend the `## [Unreleased]` section with `Added / Changed / Fixed /
      Security` bullets derived from the commits. Keep entries user-facing.
 
-4. **Commit** the changelog (+ any review fixes) with a clear message.
+5. **Commit** the changelog (+ any review fixes) with a clear message.
    End the message with the project's `Co-Authored-By` trailer.
 
-5. **Prepare the MR/PR**
+6. **Prepare the MR/PR**
    - **If a git remote exists:** ensure work is on a feature branch (never ship
      straight from the default branch). `git push -u origin <branch>`, then
      `gh pr create` with a title + body containing the summary and a review
@@ -39,7 +46,7 @@ MR/PR → merge. Be careful and **confirm before any irreversible/outward step**
      `.gitignore` excludes it). Otherwise produce the summary as a local
      `MR.md` and prepare a local merge.
 
-6. **Review & merge** — only after 🔴 issues are clear and the user confirms:
+7. **Review & merge** — only after 🔴 issues are clear and the user confirms:
    - PR path: `gh pr merge --squash --delete-branch` with a comment summarizing
      the review outcome.
    - Local path: `git checkout <base> && git merge --no-ff <branch>` with a
