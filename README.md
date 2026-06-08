@@ -59,6 +59,16 @@ php artisan key:generate         # writes APP_KEY into .env (read by compose)
 docker compose up --build        # http://localhost:8000
 ```
 
+> ⚠️ **The container bakes the app code at build time** (only the database and
+> `storage/` are volume-mounted). After **any backend code change**, rebuild or
+> the container keeps running the old code:
+> ```bash
+> docker compose up -d --build
+> ```
+> Symptom of a stale container: API responses show raw `{"pl":…,"en":…}` JSON
+> (old code without the translation cast reading new bilingual data). For live
+> code reload during development, run `php artisan serve` on the host instead.
+
 ### 2. Frontend (Vue app)
 
 ```bash
