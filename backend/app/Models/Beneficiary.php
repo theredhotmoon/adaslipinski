@@ -1,9 +1,12 @@
 <?php
 namespace App\Models;
 use App\Casts\Translatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Beneficiary extends Model {
+    use HasFactory;
+
     protected $fillable = [
         'name', 'full_name', 'age', 'diagnosis', 'diagnosis_plain',
         'hero_kicker', 'hero_title', 'hero_subtitle',

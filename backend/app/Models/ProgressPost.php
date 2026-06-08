@@ -1,9 +1,12 @@
 <?php
 namespace App\Models;
 use App\Casts\Translatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProgressPost extends Model {
+    use HasFactory;
+
     protected $fillable = ['tag', 'title', 'body', 'image_id', 'image_alt', 'amount_pln', 'published_at'];
     protected $casts = [
         'amount_pln' => 'integer', 'published_at' => 'datetime',

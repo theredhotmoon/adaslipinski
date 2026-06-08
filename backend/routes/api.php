@@ -34,10 +34,15 @@ Route::middleware('auth:api')->group(function () {
 
         // Full CRUD resources
         Route::apiResource('budget-items', Admin\BudgetItemController::class);
-        Route::apiResource('progress', Admin\ProgressPostController::class);
+        // Route param names must match the controller's bound variable so implicit
+        // model binding resolves (e.g. {progressPost} ↔ $progressPost). Without
+        // this, faq/progress edits & deletes silently hit an empty model.
+        Route::apiResource('progress', Admin\ProgressPostController::class)
+             ->parameters(['progress' => 'progressPost']);
         Route::apiResource('milestones', Admin\MilestoneController::class);
         Route::apiResource('expenses', Admin\ExpenseController::class);
-        Route::apiResource('faq', Admin\FaqItemController::class);
+        Route::apiResource('faq', Admin\FaqItemController::class)
+             ->parameters(['faq' => 'faqItem']);
         Route::apiResource('partners', Admin\PartnerController::class);
         Route::apiResource('donation-amounts', Admin\DonationAmountController::class)
              ->except(['show']);

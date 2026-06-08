@@ -1,8 +1,11 @@
 <?php
 namespace App\Models;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DonationAmount extends Model {
+    use HasFactory;
+
     protected $fillable = ['amount_pln', 'sort_order', 'active'];
     protected $casts = ['amount_pln' => 'integer', 'sort_order' => 'integer', 'active' => 'boolean'];
 

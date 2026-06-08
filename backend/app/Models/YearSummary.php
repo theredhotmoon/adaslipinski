@@ -1,8 +1,11 @@
 <?php
 namespace App\Models;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class YearSummary extends Model {
+    use HasFactory;
+
     protected $primaryKey = 'year';
     public $incrementing = false;
     protected $fillable = ['year', 'received_pln', 'spent_pln', 'balance_pln', 'tax_1_5_pln'];
