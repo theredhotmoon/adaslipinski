@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Lock, LogOut, Pencil, Eye, EyeOff } from 'lucide-vue-next'
 import { useAuthStore } from '@/features/auth/store'
 
 const auth = useAuthStore()
+const { t } = useI18n()
 
 // Login form state
 const showLogin = ref(false)
@@ -24,7 +26,7 @@ async function login() {
   } catch (e: any) {
     error.value = e.response?.data?.errors?.email?.[0]
       ?? e.response?.data?.message
-      ?? 'Błąd logowania'
+      ?? t('admin.loginError')
   } finally {
     loading.value = false
   }
@@ -47,11 +49,11 @@ function logout() {
       style="background: #065f46; color: #d1fae5; font-family: inherit;"
     >
       <Pencil :size="13" />
-      Tryb admin
+      {{ t('admin.mode') }}
       <button
         @click="logout"
         class="ml-1 opacity-70 hover:opacity-100 transition-opacity"
-        title="Wyloguj"
+        :title="t('admin.logout')"
       >
         <LogOut :size="13" />
       </button>
@@ -82,7 +84,7 @@ function logout() {
         class="relative w-full max-w-[430px] bg-white rounded-t-3xl p-6 shadow-2xl animate-sheet-up"
       >
         <h3 class="text-lg font-black mb-4" style="font-family: inherit; color: #065f46;">
-          🔐 Admin Login
+          🔐 {{ t('admin.loginTitle') }}
         </h3>
 
         <div v-if="error" class="mb-3 px-3 py-2 bg-red-50 text-red-600 text-sm font-semibold rounded-lg">
@@ -102,7 +104,7 @@ function logout() {
         </label>
 
         <label class="block mb-4 relative">
-          <span class="text-xs font-bold text-gray-500 mb-1 block">Hasło</span>
+          <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('admin.passwordLabel') }}</span>
           <input
             v-model="password"
             :type="showPw ? 'text' : 'password'"
@@ -126,11 +128,11 @@ function logout() {
           style="background: #065f46; color: white; font-family: inherit;"
           @click="login"
         >
-          {{ loading ? 'Logowanie…' : 'Zaloguj się' }}
+          {{ loading ? t('admin.loggingIn') : t('admin.signIn') }}
         </button>
 
         <p class="mt-3 text-center text-xs text-gray-400">
-          Tylko dla autoryzowanych adresów e-mail
+          {{ t('admin.authorizedOnly') }}
         </p>
       </div>
     </div>

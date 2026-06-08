@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/features/auth/store'
 import { X } from 'lucide-vue-next'
 
 const props = defineProps<{ label?: string }>()
 const emit = defineEmits<{ click: [] }>()
 const auth = useAuthStore()
+const { t } = useI18n()
 
 function handleClick() {
-  if (confirm(`Usunąć ${props.label ?? 'ten element'}?`)) emit('click')
+  if (confirm(t('admin.confirmDelete', { item: props.label ?? t('admin.thisItem') }))) emit('click')
 }
 </script>
 
@@ -22,6 +24,6 @@ function handleClick() {
     }"
     @click.stop="handleClick"
   >
-    <X :size="13" /> {{ label ?? 'Usuń' }}
+    <X :size="13" /> {{ t('admin.delete') }}
   </button>
 </template>

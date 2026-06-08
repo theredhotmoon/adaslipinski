@@ -1,17 +1,25 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrIcon from './FrIcon.vue'
-import { theme, data } from '../data'
+import { siteConfig } from '@/config/site'
+import { theme } from '../data'
 const { c, r } = theme
+const { t } = useI18n()
 
 defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: []; navigate: [string] }>()
 
-const items = [
-  { k: 'tax', l: '1,5% podatku', s: 'Sezon PIT — do 30 kwietnia', icon: 'percent' },
-  { k: 'expenses', l: 'Wydatki i rozliczenia', s: 'Faktury, rejestr, sprawozdania', icon: 'receipt' },
-  { k: 'foundation', l: 'Fundacja', s: 'KRS, subkonto, źródła', icon: 'building' },
-  { k: 'contact', l: 'Kontakt', s: 'E-mail, telefon, EN', icon: 'mail' },
-]
+const items = computed(() => [
+  { k: 'tax', l: t('nav.tax'), s: t('moreSheet.taxS'), icon: 'percent' },
+  { k: 'expenses', l: t('nav.expenses'), s: t('moreSheet.expensesS'), icon: 'receipt' },
+  { k: 'foundation', l: t('nav.foundation'), s: t('moreSheet.foundationS'), icon: 'building' },
+  { k: 'contact', l: t('nav.contact'), s: t('moreSheet.contactS'), icon: 'mail' },
+])
+
+const footer = computed(() =>
+  t('moreSheet.footer', { foundation: siteConfig.foundation.name, krs: siteConfig.foundation.krs }),
+)
 </script>
 
 <template>
@@ -49,10 +57,7 @@ const items = [
             <FrIcon name="chevR" :size="18" :color="c.inkSoft" />
           </button>
         </div>
-        <div :style="{ marginTop: '16px', textAlign: 'center', fontSize: '11.5px', color: c.inkSoft, lineHeight: 1.5 }">
-          Fundacja „Słoneczko" · OPP · KRS {{ data.foundation.krs }}<br />
-          Zbiórka prowadzona zgodnie z prawem · Polityka prywatności
-        </div>
+        <div :style="{ marginTop: '16px', textAlign: 'center', fontSize: '11.5px', color: c.inkSoft, lineHeight: 1.5 }" v-html="footer" />
       </div>
     </div>
   </Teleport>

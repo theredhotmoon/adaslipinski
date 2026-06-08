@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import FrIcon from './FrIcon.vue'
-import { theme, data } from '../data'
+import { siteConfig } from '@/config/site'
+import { theme } from '../data'
 const { c, r } = theme
-const d = data.foundation
+const { t } = useI18n()
+const fo = siteConfig.foundation
 </script>
 
 <template>
@@ -10,10 +13,10 @@ const d = data.foundation
     <FrIcon name="shield" :size="26" :color="c.primary" :stroke-width="1.8" />
     <div style="flex: 1; min-width: 0">
       <div :style="{ fontSize: '12.5px', fontWeight: 800, color: c.ink, lineHeight: 1.3 }">
-        Pieniądze trafiają do fundacji, nie na konto prywatne.
+        {{ t('trust.title') }}
       </div>
       <div :style="{ fontSize: '11.5px', color: c.inkSoft, marginTop: '2px' }">
-        Fundacja „Słoneczko" · OPP · KRS {{ d.krs }}
+        {{ t('trust.sub', { foundation: fo.name, krs: fo.krs }) }}
       </div>
     </div>
   </div>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import FrIcon from './FrIcon.vue'
 import { theme } from '../data'
 const { c, r } = theme
+const { t } = useI18n()
 
 defineProps<{ label?: string }>()
 const emit = defineEmits<{ open: [] }>()
@@ -18,7 +20,7 @@ const emit = defineEmits<{ open: [] }>()
       }"
       @click="emit('open')"
     >
-      {{ label ?? '💛 Wpłać teraz' }}
+      {{ label ?? t('donate.ctaBar') }}
       <FrIcon name="arrowR" :size="19" :color="c.primaryInk" />
     </button>
   </div>

@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrIcon from './FrIcon.vue'
 import FrFreqToggle from './FrFreqToggle.vue'
 import FrAmountChips from './FrAmountChips.vue'
 import FrCopyField from './FrCopyField.vue'
 import FrPh from './FrPh.vue'
 import FrBtn from './FrBtn.vue'
+import { siteConfig } from '@/config/site'
 import { theme, data, zl } from '../data'
 const { c, r, f } = theme
+const { t } = useI18n()
+const name = siteConfig.beneficiary.name
+const fo = siteConfig.foundation
 
 const props = defineProps<{
   open: boolean
@@ -47,11 +52,22 @@ function cardInputStyle(extra = '') {
   ]
 }
 
-const methods = [
+const methods = computed(() => [
   { k: 'blik' as const, l: 'BLIK', icon: 'blik' },
-  { k: 'card' as const, l: 'Karta', icon: 'card' },
-  { k: 'transfer' as const, l: 'Przelew', icon: 'transfer' },
-]
+  { k: 'card' as const, l: t('donateModal.methodCard'), icon: 'card' },
+  { k: 'transfer' as const, l: t('donateModal.methodTransfer'), icon: 'transfer' },
+])
+
+const thanksMessage = computed(() => t(
+  freq.value === 'monthly' ? 'donateModal.thanksMonthly' : 'donateModal.thanksOnce',
+  { amount: zl(finalAmount()), name },
+))
+
+const payLabel = computed(() => {
+  if (method.value === 'transfer') return t('donateModal.didTransfer')
+  const key = freq.value === 'monthly' ? 'donateModal.payNowMonthly' : 'donateModal.payNow'
+  return t(key, { amount: zl(finalAmount() || 0) })
+})
 </script>
 
 <template>
@@ -75,24 +91,20 @@ const methods = [
           <div :style="{ width: '76px', height: '76px', borderRadius: '999px', background: c.primarySoft, display: 'grid', placeItems: 'center', margin: '8px auto 16px' }" class="animate-pop">
             <FrIcon name="heart" :size="40" :color="c.primary" />
           </div>
-          <h3 :style="{ margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '24px', color: c.ink, letterSpacing: f.hLetter }">Dziękujemy! 💛</h3>
-          <p :style="{ margin: '8px 0 0', color: c.inkSoft, fontSize: '14.5px', lineHeight: 1.5 }">
-            {{ freq === 'monthly'
-              ? `Twoje ${zl(finalAmount())} co miesiąc to ${Math.max(1, Math.round(finalAmount() / 100))} ${finalAmount() >= 100 ? 'tydzień' : 'krok'} rehabilitacji Adasia. Adam i jego rodzice dziękują!`
-              : `Twoja wpłata ${zl(finalAmount())} trafia prosto do Adasia. Adam i jego rodzice dziękują!` }}
-          </p>
+          <h3 :style="{ margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '24px', color: c.ink, letterSpacing: f.hLetter }">{{ t('donateModal.thanks') }}</h3>
+          <p :style="{ margin: '8px 0 0', color: c.inkSoft, fontSize: '14.5px', lineHeight: 1.5 }">{{ thanksMessage }}</p>
           <div v-if="freq === 'once'" :style="{ marginTop: '18px', padding: '14px', background: c.primarySoft, borderRadius: r + 'px', textAlign: 'left' }">
             <div :style="{ fontWeight: 800, color: c.ink, fontSize: '14.5px', display: 'flex', alignItems: 'center', gap: '7px' }">
-              <FrIcon name="repeat" :size="18" :color="c.primary" /> Powtarzać tę kwotę co miesiąc?
+              <FrIcon name="repeat" :size="18" :color="c.primary" /> {{ t('donateModal.repeatTitle') }}
             </div>
-            <p :style="{ margin: '6px 0 12px', fontSize: '13px', color: c.inkSoft, lineHeight: 1.5 }">Stałe wsparcie pomaga najbardziej — potwierdzasz raz, przerywasz kiedy chcesz.</p>
-            <FrBtn variant="primary" :full="true" @click="freq = 'monthly'">Tak, wspieram co miesiąc</FrBtn>
+            <p :style="{ margin: '6px 0 12px', fontSize: '13px', color: c.inkSoft, lineHeight: 1.5 }">{{ t('donateModal.repeatBody') }}</p>
+            <FrBtn variant="primary" :full="true" @click="freq = 'monthly'">{{ t('donateModal.repeatYes') }}</FrBtn>
           </div>
           <div :style="{ marginTop: '16px', display: 'flex', gap: '8px' }">
             <FrBtn variant="soft" :full="true">
-              <FrIcon name="share" :size="17" :color="c.primary" /> Udostępnij
+              <FrIcon name="share" :size="17" :color="c.primary" /> {{ t('donateModal.share') }}
             </FrBtn>
-            <FrBtn variant="ghost" :full="true" @click="emit('close')">Zamknij</FrBtn>
+            <FrBtn variant="ghost" :full="true" @click="emit('close')">{{ t('common.close') }}</FrBtn>
           </div>
         </div>
 
@@ -100,7 +112,7 @@ const methods = [
         <div v-else style="overflow-y: auto; padding: 14px 18px 22px;">
           <div :style="{ display: 'flex', alignItems: 'center', marginBottom: '14px' }">
             <h3 :style="{ flex: 1, margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '22px', color: c.ink, letterSpacing: f.hLetter }">
-              {{ initItem ? `Sfinansuj: ${initItem}` : 'Wesprzyj Adasia' }}
+              {{ initItem ? t('donateModal.fund', { item: initItem }) : t('donateModal.support', { name }) }}
             </h3>
             <button :style="{ border: 'none', background: c.surfaceAlt, borderRadius: '999px', width: '34px', height: '34px', cursor: 'pointer', display: 'grid', placeItems: 'center' }" @click="emit('close')">
               <FrIcon name="close" :size="18" :color="c.inkSoft" />
@@ -109,14 +121,14 @@ const methods = [
 
           <FrFreqToggle v-model="freq" size="lg" />
           <div v-if="freq === 'monthly'" :style="{ marginTop: '8px', fontSize: '12.5px', color: c.primary, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }">
-            <FrIcon name="heart" :size="14" :color="c.primary" /> Najbardziej pomaga regularne wsparcie — możesz przerwać kiedy chcesz.
+            <FrIcon name="heart" :size="14" :color="c.primary" /> {{ t('donateModal.monthlyHint') }}
           </div>
 
           <div style="height: 16px" />
           <FrAmountChips v-model="amount" v-model:custom="custom" :freq="freq" />
 
           <div style="height: 18px" />
-          <div :style="{ fontSize: '12.5px', fontWeight: 700, color: c.inkSoft, marginBottom: '8px' }">Metoda wpłaty</div>
+          <div :style="{ fontSize: '12.5px', fontWeight: 700, color: c.inkSoft, marginBottom: '8px' }">{{ t('donateModal.method') }}</div>
           <div :style="{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '8px' }">
             <button
               v-for="m in methods"
@@ -139,7 +151,7 @@ const methods = [
 
           <!-- BLIK -->
           <div v-if="method === 'blik'">
-            <div :style="{ fontSize: '13px', color: c.inkSoft, marginBottom: '8px' }">Wpisz 6-cyfrowy kod z aplikacji banku:</div>
+            <div :style="{ fontSize: '13px', color: c.inkSoft, marginBottom: '8px' }">{{ t('donateModal.blikPrompt') }}</div>
             <input
               v-model="blik"
               inputmode="numeric"
@@ -152,12 +164,12 @@ const methods = [
               }"
               @input="blik = (blik as string).replace(/[^0-9]/g, '').slice(0, 6)"
             />
-            <div :style="{ marginTop: '8px', fontSize: '12px', color: c.inkSoft, textAlign: 'center' }">Bez prowizji dla zbiórek OPP · potwierdzenie w 2 sekundy</div>
+            <div :style="{ marginTop: '8px', fontSize: '12px', color: c.inkSoft, textAlign: 'center' }">{{ t('donateModal.blikNote') }}</div>
           </div>
 
           <!-- Card -->
           <div v-else-if="method === 'card'" class="flex flex-col gap-2">
-            <input placeholder="Numer karty" :style="cardInputStyle()" />
+            <input :placeholder="t('donateModal.cardNumber')" :style="cardInputStyle()" />
             <div class="flex gap-2">
               <input placeholder="MM / RR" :style="cardInputStyle('flex:1')" />
               <input placeholder="CVC" :style="cardInputStyle('flex:1')" />
@@ -170,24 +182,23 @@ const methods = [
 
           <!-- Transfer -->
           <div v-else>
-            <FrCopyField label="Numer konta (PLN)" :value="data.foundation.accounts[0].iban" />
-            <FrCopyField label="Tytuł przelewu — KONIECZNIE" :value="data.foundation.cel" :mono="false" />
+            <FrCopyField :label="t('donateModal.accountPln')" :value="data.foundation.accounts[0].iban" />
+            <FrCopyField :label="t('donateModal.transferTitleReq')" :value="data.foundation.cel" :mono="false" />
             <div :style="{ display: 'flex', gap: '12px', alignItems: 'center', marginTop: '4px' }">
-              <FrPh label="Kod QR przelewu" :h="84" :radius="Math.round(r * 0.6)" style="width: 84px; flex-shrink: 0;" />
-              <div :style="{ fontSize: '12px', color: c.inkSoft, lineHeight: 1.5 }">Zeskanuj w aplikacji banku — kwota i tytuł wypełnią się same.</div>
+              <FrPh :label="t('donateModal.qrAlt')" :h="84" :radius="Math.round(r * 0.6)" style="width: 84px; flex-shrink: 0;" />
+              <div :style="{ fontSize: '12px', color: c.inkSoft, lineHeight: 1.5 }">{{ t('donateModal.qrHint') }}</div>
             </div>
           </div>
 
           <div style="height: 18px" />
           <FrBtn variant="primary" :full="true" size="lg" @click="step = 'thanks'">
-            {{ method === 'transfer' ? 'Zrobiłem przelew' : `Wpłać ${zl(finalAmount() || 0)}${freq === 'monthly' ? ' co miesiąc' : ''}` }}
+            {{ payLabel }}
           </FrBtn>
           <div :style="{ marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '11.5px', color: c.inkSoft }">
-            <FrIcon name="shield" :size="14" :color="c.inkSoft" /> Płatność na subkonto Fundacji „Słoneczko" · KRS {{ data.foundation.krs }}
+            <FrIcon name="shield" :size="14" :color="c.inkSoft" /> {{ t('donateModal.securityNote', { foundation: fo.name, krs: fo.krs }) }}
           </div>
         </div>
       </div>
     </div>
   </Teleport>
 </template>
-

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/features/auth/store'
 import { theme } from '@/features/fundraising/data'
 const { c } = theme
+const { t } = useI18n()
 
 defineProps<{ label?: string }>()
 const emit = defineEmits<{ click: [] }>()
@@ -22,6 +24,6 @@ const auth = useAuthStore()
     @click="emit('click')"
   >
     <span style="font-size: 18px; line-height: 1;">+</span>
-    {{ label ?? 'Dodaj' }}
+    {{ label ?? t('admin.add') }}
   </button>
 </template>

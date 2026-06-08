@@ -105,7 +105,7 @@ function openDonate(payload: { amount: number; freq: 'once' | 'monthly'; item?: 
         background: c.surface,
       }"
     >
-      <FrDonateBar :label="theme.copy.ctaBar" @open="openDonate({ amount: 100, freq: 'monthly' })" />
+      <FrDonateBar @open="openDonate({ amount: 100, freq: 'monthly' })" />
       <FrBottomNav :active="tab" @nav="navigate" @more="moreOpen = true" />
       <div :style="{ display: 'flex', justifyContent: 'center', paddingBottom: '8px', paddingTop: '2px', background: c.surface }">
         <div :style="{ width: '134px', height: '5px', borderRadius: '3px', background: 'rgba(0,0,0,0.18)' }" />
