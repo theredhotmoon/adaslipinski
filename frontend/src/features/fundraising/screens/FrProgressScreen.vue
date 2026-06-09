@@ -12,6 +12,7 @@ import InlineText from '@/features/admin/components/InlineText.vue'
 import AdminAdd from '@/features/admin/components/AdminAdd.vue'
 import AdminDelete from '@/features/admin/components/AdminDelete.vue'
 import AdminFormModal from '@/features/admin/components/AdminFormModal.vue'
+import AdminImageUpload from '@/features/admin/components/AdminImageUpload.vue'
 import { useUpdateProgress, useCreateProgress, useDeleteProgress } from '@/features/admin/useCmsApi'
 import { siteConfig } from '@/config/site'
 import { theme, data as staticData, zl } from '../data'
@@ -65,7 +66,12 @@ function submitPost() {
 
     <div style="padding: 16px 18px 0; display: flex; flex-direction: column; gap: 16px;">
       <FrCard v-for="p in posts" :key="p.id" :pad="0" :style="{ overflow: 'hidden' }">
-        <FrPh :label="p.img" :h="180" :radius="0" />
+        <div style="position: relative;">
+          <FrPh :label="p.img" :src="p.imgUrl" :h="180" :radius="0" />
+          <div style="position: absolute; bottom: 8px; right: 8px;">
+            <AdminImageUpload :alt="p.title" @uploaded="updatePost({ id: p.id, image_id: $event.id })" />
+          </div>
+        </div>
         <div style="padding: 16px;">
           <div :style="{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }">
             <FrPill tone="soft">

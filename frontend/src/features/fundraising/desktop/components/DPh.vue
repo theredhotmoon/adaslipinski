@@ -1,11 +1,26 @@
 <script setup lang="ts">
 import { dt } from '../desktopTheme'
 const { c } = dt
-defineProps<{ label: string; ratio?: string; h?: number; radius?: number }>()
+defineProps<{ label: string; ratio?: string; h?: number; radius?: number; src?: string }>()
 </script>
 
 <template>
+  <img
+    v-if="src"
+    :src="src"
+    :alt="label"
+    :style="{
+      height: ratio ? undefined : (h ?? 220) + 'px',
+      aspectRatio: ratio,
+      width: '100%',
+      objectFit: 'cover',
+      borderRadius: (radius ?? 18) + 'px',
+      display: 'block',
+      border: `1px solid ${c.line}`,
+    }"
+  />
   <div
+    v-else
     :style="{
       height: ratio ? undefined : (h ?? 220) + 'px',
       aspectRatio: ratio,

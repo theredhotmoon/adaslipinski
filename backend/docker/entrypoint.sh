@@ -12,6 +12,10 @@ composer run-script post-autoload-dump 2>/dev/null || true
 # Run migrations
 php artisan migrate --force --no-interaction
 
+# Symlink public/storage -> storage/app/public so uploaded media (CMS images)
+# is web-accessible at /storage/...
+php artisan storage:link --force --no-interaction 2>/dev/null || true
+
 # Generate Passport keys into /var/www/passport-keys (configured via AppServiceProvider).
 # --force ensures valid 600-permission keys exist on every fresh container.
 php artisan passport:keys --force --no-interaction 2>/dev/null || true

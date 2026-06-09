@@ -11,6 +11,23 @@ function useInvalidating<T>(fn: (data: T) => Promise<unknown>) {
   })
 }
 
+// ── Media (image upload) ──────────────────────────────────────────────────────
+export const useUploadMedia = () =>
+  useMutation({
+    mutationFn: ({ file, altText }: { file: File; altText?: string }) => {
+      const fd = new FormData()
+      fd.append('file', file)
+      if (altText) fd.append('alt_text', altText)
+      // Override the client's default JSON content-type so axios sets the
+      // multipart boundary itself.
+      return api
+        .post<{ id: number; url: string }>('/admin/media', fd, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then((r) => r.data)
+    },
+  })
+
 // ── Beneficiary ───────────────────────────────────────────────────────────────
 export const useUpdateBeneficiary = () =>
   useInvalidating((data: Record<string, unknown>) =>
