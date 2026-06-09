@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import DPh from './DPh.vue'
 import DPill from './DPill.vue'
 import InlineText from '@/features/admin/components/InlineText.vue'
@@ -12,6 +13,7 @@ import { dt } from '../desktopTheme'
 import { data as staticData, zl } from '../../data'
 import type { SiteContent } from '../../types'
 const { c } = dt
+const { t } = useI18n()
 
 const props = defineProps<{ cols?: number; limit?: number }>()
 
@@ -50,7 +52,7 @@ function submitPost() {
             </DPill>
             <span :style="{ fontSize: '13px', color: c.inkSoft, fontWeight: 600 }">{{ p.date }}</span>
             <span v-if="p.amount" :style="{ marginLeft: 'auto', fontSize: '13px', fontWeight: 800, color: c.primaryDeep }">{{ zl(p.amount) }}</span>
-            <AdminDelete label="wpis" :style="{ marginLeft: p.amount ? '8px' : 'auto' }" @click="deletePost(p.id)" />
+            <AdminDelete :label="t('admin.del.post')" :style="{ marginLeft: p.amount ? '8px' : 'auto' }" @click="deletePost(p.id)" />
           </div>
           <InlineText tag="h3" :value="p.title" @save="updatePost({ id: p.id, title: $event })" :style="{ margin: '11px 0 0', fontFamily: dt.font, fontWeight: 800, fontSize: '18.5px', color: c.ink, lineHeight: 1.25, display: 'block' }" />
           <InlineText tag="p" :value="p.body" :multiline="true" @save="updatePost({ id: p.id, body: $event })" :style="{ margin: '8px 0 0', color: c.inkSoft, fontSize: '14.5px', lineHeight: 1.55, display: 'block' }" />
@@ -58,30 +60,30 @@ function submitPost() {
       </article>
     </div>
     <div class="max-w-[300px] mt-4">
-      <AdminAdd label="Dodaj wpis" @click="showAdd = true" />
+      <AdminAdd :label="t('progress.addPost')" @click="showAdd = true" />
     </div>
 
-    <AdminFormModal title="Dodaj wpis postępu" :open="showAdd" :saving="creating" @close="showAdd = false" @save="submitPost">
+    <AdminFormModal :title="t('progress.addPostTitle')" :open="showAdd" :saving="creating" @close="showAdd = false" @save="submitPost">
       <label class="block mb-3">
-        <span class="text-xs font-bold text-gray-500 mb-1 block">Tag</span>
+        <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('progress.tagLabel') }}</span>
         <input v-model="newPost.tag" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
       </label>
       <label class="block mb-3">
-        <span class="text-xs font-bold text-gray-500 mb-1 block">Tytuł *</span>
+        <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('progress.titleLabel') }}</span>
         <input v-model="newPost.title" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
       </label>
       <label class="block mb-3">
-        <span class="text-xs font-bold text-gray-500 mb-1 block">Treść *</span>
+        <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('progress.bodyLabel') }}</span>
         <textarea v-model="newPost.body" rows="4" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400 resize-none" />
       </label>
       <div class="grid grid-cols-2 gap-3">
         <label class="block">
-          <span class="text-xs font-bold text-gray-500 mb-1 block">Data</span>
+          <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('progress.dateLabel') }}</span>
           <input v-model="newPost.published_at" type="date" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
         </label>
         <label class="block">
-          <span class="text-xs font-bold text-gray-500 mb-1 block">Kwota (zł)</span>
-          <input v-model="newPost.amount_pln" type="number" min="0" placeholder="opcjonalnie" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
+          <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('progress.amountLabel') }}</span>
+          <input v-model="newPost.amount_pln" type="number" min="0" :placeholder="t('common.optional')" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
         </label>
       </div>
     </AdminFormModal>

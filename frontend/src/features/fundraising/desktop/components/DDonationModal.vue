@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrIcon from '../../components/FrIcon.vue'
 import DBtn from './DBtn.vue'
 import DCopyChip from './DCopyChip.vue'
+import { siteConfig } from '@/config/site'
 import { dt } from '../desktopTheme'
 import { data, zl } from '../../data'
 const { c } = dt
+const { t } = useI18n()
+const name = siteConfig.beneficiary.name
+const fo = siteConfig.foundation
 
 const props = defineProps<{
   open: boolean
@@ -23,11 +28,20 @@ watch(() => props.open, (v) => {
   if (v) { method.value = 'blik'; blik.value = ''; step.value = 'form' }
 })
 
-const methods = [
+const methods = computed(() => [
   { k: 'blik' as const, l: 'BLIK', icon: 'blik' },
-  { k: 'card' as const, l: 'Karta / Apple Pay', icon: 'card' },
-  { k: 'transfer' as const, l: 'Przelew', icon: 'transfer' },
-]
+  { k: 'card' as const, l: t('d.modal.methodCardApple'), icon: 'card' },
+  { k: 'transfer' as const, l: t('donateModal.methodTransfer'), icon: 'transfer' },
+])
+
+const freqWord = computed(() => props.freq === 'monthly' ? t('d.modal.freqMonthly') : t('d.modal.freqOnce'))
+const amountWithFreq = computed(() => zl(props.amount ?? 100) + (props.freq === 'monthly' ? ' ' + t('d.modal.freqMonthly') : ''))
+const thanksMessage = computed(() => t('d.modal.thanks', { amount: amountWithFreq.value, name }))
+const payLabel = computed(() =>
+  method.value === 'transfer'
+    ? t('donateModal.didTransfer')
+    : t('donateModal.payNow', { amount: amountWithFreq.value }),
+)
 </script>
 
 <template>
@@ -41,15 +55,13 @@ const methods = [
           <div :style="{ width: '80px', height: '80px', borderRadius: '999px', background: c.primarySoft, display: 'grid', placeItems: 'center', margin: '0 auto 18px' }">
             <FrIcon name="heart" :size="42" :color="c.primary" />
           </div>
-          <h3 :style="{ margin: 0, fontWeight: 900, fontSize: '26px', color: c.ink }">Dziękujemy! 💛</h3>
-          <p :style="{ margin: '10px 0 0', color: c.inkSoft, fontSize: '15.5px', lineHeight: 1.55 }">
-            Twoje {{ zl(amount ?? 100) }}{{ freq === 'monthly' ? ' co miesiąc' : '' }} trafia prosto na rehabilitację Adasia. Adam i jego rodzice dziękują!
-          </p>
+          <h3 :style="{ margin: 0, fontWeight: 900, fontSize: '26px', color: c.ink }">{{ t('donateModal.thanks') }}</h3>
+          <p :style="{ margin: '10px 0 0', color: c.inkSoft, fontSize: '15.5px', lineHeight: 1.55 }">{{ thanksMessage }}</p>
           <div class="flex gap-2.5 mt-5">
             <DBtn variant="soft" :full="true">
-              <FrIcon name="share" :size="17" :color="c.primaryDeep" /> Udostępnij
+              <FrIcon name="share" :size="17" :color="c.primaryDeep" /> {{ t('donateModal.share') }}
             </DBtn>
-            <DBtn variant="ghost" :full="true" @click="emit('close')">Zamknij</DBtn>
+            <DBtn variant="ghost" :full="true" @click="emit('close')">{{ t('common.close') }}</DBtn>
           </div>
         </div>
 
@@ -57,8 +69,8 @@ const methods = [
         <div v-else class="p-7 pb-8">
           <div class="flex items-start justify-between mb-[18px]">
             <div>
-              <h3 :style="{ margin: 0, fontWeight: 900, fontSize: '24px', color: c.ink }">{{ item ? `Sfinansuj: ${item}` : 'Wesprzyj Adasia' }}</h3>
-              <div :style="{ marginTop: '4px', fontSize: '15px', color: c.inkSoft, fontWeight: 700 }">{{ zl(amount ?? 100) }}{{ freq === 'monthly' ? ' co miesiąc' : ' jednorazowo' }}</div>
+              <h3 :style="{ margin: 0, fontWeight: 900, fontSize: '24px', color: c.ink }">{{ item ? t('donateModal.fund', { item }) : t('donateModal.support', { name }) }}</h3>
+              <div :style="{ marginTop: '4px', fontSize: '15px', color: c.inkSoft, fontWeight: 700 }">{{ zl(amount ?? 100) }} {{ freqWord }}</div>
             </div>
             <button :style="{ border: 'none', background: c.surfaceAlt, borderRadius: '999px', width: '38px', height: '38px', cursor: 'pointer', display: 'grid', placeItems: 'center' }" @click="emit('close')">
               <FrIcon name="close" :size="19" :color="c.inkSoft" />
@@ -84,7 +96,7 @@ const methods = [
 
           <!-- BLIK -->
           <div v-if="method === 'blik'">
-            <div :style="{ fontSize: '13.5px', color: c.inkSoft, marginBottom: '8px' }">Wpisz 6-cyfrowy kod z aplikacji banku:</div>
+            <div :style="{ fontSize: '13.5px', color: c.inkSoft, marginBottom: '8px' }">{{ t('donateModal.blikPrompt') }}</div>
             <input v-model="blik" inputmode="numeric" placeholder="• • • • • •" maxlength="6"
               :style="{ width: '100%', boxSizing: 'border-box', textAlign: 'center', letterSpacing: '0.45em', padding: '16px', fontSize: '26px', fontWeight: 800, fontFamily: 'ui-monospace, Menlo, monospace', color: c.ink, background: c.surface, border: `1.5px solid ${c.line}`, borderRadius: '14px', outline: 'none' }"
               @input="blik = blik.replace(/[^0-9]/g, '').slice(0, 6)"
@@ -93,7 +105,7 @@ const methods = [
 
           <!-- Card -->
           <div v-else-if="method === 'card'" class="flex flex-col gap-2">
-            <input placeholder="Numer karty" :style="{ padding: '13px 14px', fontFamily: 'ui-monospace, Menlo, monospace', fontSize: '15px', fontWeight: 700, color: c.ink, background: c.surface, border: `1.5px solid ${c.line}`, borderRadius: '12px', outline: 'none', width: '100%' }" />
+            <input :placeholder="t('donateModal.cardNumber')" :style="{ padding: '13px 14px', fontFamily: 'ui-monospace, Menlo, monospace', fontSize: '15px', fontWeight: 700, color: c.ink, background: c.surface, border: `1.5px solid ${c.line}`, borderRadius: '12px', outline: 'none', width: '100%' }" />
             <div class="flex gap-2">
               <input placeholder="MM / RR" :style="{ flex: 1, padding: '13px 14px', fontFamily: 'ui-monospace, Menlo, monospace', fontSize: '15px', fontWeight: 700, color: c.ink, background: c.surface, border: `1.5px solid ${c.line}`, borderRadius: '12px', outline: 'none' }" />
               <input placeholder="CVC" :style="{ width: '90px', padding: '13px 14px', fontFamily: 'ui-monospace, Menlo, monospace', fontSize: '15px', fontWeight: 700, color: c.inkSoft, background: c.surface, border: `1.5px solid ${c.line}`, borderRadius: '12px', outline: 'none' }" />
@@ -103,15 +115,15 @@ const methods = [
           <!-- Transfer -->
           <div v-else class="flex flex-col gap-2">
             <DCopyChip :value="data.foundation.accounts[0].iban" />
-            <DCopyChip :value="`Tytuł: ${data.foundation.cel}`" :mono="false" />
+            <DCopyChip :value="`${t('foundation.transferTitle')}: ${data.foundation.cel}`" :mono="false" />
           </div>
 
           <div class="h-5" />
           <DBtn variant="primary" :full="true" size="lg" @click="step = 'thanks'">
-            {{ method === 'transfer' ? 'Zrobiłem przelew' : `Wpłać ${zl(amount ?? 100)}${freq === 'monthly' ? ' co miesiąc' : ''}` }}
+            {{ payLabel }}
           </DBtn>
           <div :style="{ marginTop: '12px', textAlign: 'center', fontSize: '12px', color: c.inkSoft, display: 'flex', gap: '6px', alignItems: 'center', justifyContent: 'center' }">
-            <FrIcon name="shield" :size="14" :color="c.inkSoft" /> Płatność na subkonto Fundacji „Słoneczko" · KRS {{ data.foundation.krs }}
+            <FrIcon name="shield" :size="14" :color="c.inkSoft" /> {{ t('donateModal.securityNote', { foundation: fo.name, krs: fo.krs }) }}
           </div>
         </div>
       </div>

@@ -20,10 +20,14 @@ import InlineText from '@/features/admin/components/InlineText.vue'
 import { useUpdateBeneficiary } from '@/features/admin/useCmsApi'
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { siteConfig } from '@/config/site'
 import { dt } from '../desktopTheme'
 import { data as staticData } from '../../data'
 import type { SiteContent } from '../../types'
 const { c } = dt
+const { t } = useI18n()
+const name = siteConfig.beneficiary.name
 
 const emit = defineEmits<{
   donate: [{ amount: number; freq: 'once' | 'monthly'; item?: string }]
@@ -67,17 +71,17 @@ function scrollTo(id: string) {
           />
           <div class="flex gap-3 mt-7">
             <DBtn variant="primary" size="lg" @click="emit('donate', { amount: 100, freq: 'monthly' })">
-              <FrIcon name="blik" :size="20" :color="c.primaryInk" /> Wpłać co miesiąc
+              <FrIcon name="blik" :size="20" :color="c.primaryInk" /> {{ t('d.hero.donateMonthly') }}
             </DBtn>
-            <DBtn variant="ghost" size="lg" @click="scrollTo('o-adasiu')">Poznaj historię</DBtn>
+            <DBtn variant="ghost" size="lg" @click="scrollTo('o-adasiu')">{{ t('d.hero.learnStory') }}</DBtn>
           </div>
           <div class="flex gap-[22px] items-center mt-7">
             <div :style="{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: c.inkSoft }">
-              <FrIcon name="shield" :size="18" :color="c.primary" /> Fundacja „Słoneczko" · KRS {{ foundation.krs }}
+              <FrIcon name="shield" :size="18" :color="c.primary" /> {{ t('trust.sub', { foundation: foundation.name, krs: foundation.krs }) }}
             </div>
           </div>
         </div>
-        <DPh label="Zdjęcie Adasia" ratio="4/5" :radius="24" style="box-shadow: 0 30px 60px -30px rgba(60,50,20,0.5);" />
+        <DPh :label="t('hero.photoAlt', { name })" ratio="4/5" :radius="24" style="box-shadow: 0 30px 60px -30px rgba(60,50,20,0.5);" />
       </div>
     </section>
 
@@ -87,24 +91,24 @@ function scrollTo(id: string) {
         <!-- Left column -->
         <div class="min-w-0">
           <div id="budzet">
-            <DSectionHeading kicker="Na co zbieramy" title="Konkrety, nie ogólniki" sub="Każda pozycja to realna terapia, którą możesz sfinansować." />
+            <DSectionHeading :kicker="t('d.kicker.budget')" :title="t('d.classic.budgetTitle')" :sub="t('d.classic.budgetSub')" />
             <DCostBar />
             <div class="h-4" />
             <DBudgetItems :cols="2" @donate="emit('donate', $event)" />
           </div>
 
           <div id="postepy" class="mt-16">
-            <DSectionHeading kicker="Dziennik" title="Postępy Adasia" sub="Tu widać, że Wasze wsparcie naprawdę działa." />
+            <DSectionHeading :kicker="t('progress.kicker')" :title="t('progress.title', { name })" :sub="t('d.classic.progressSub')" />
             <DProgressCards :cols="2" :limit="4" />
           </div>
 
           <div id="o-adasiu" class="mt-16">
-            <DSectionHeading kicker="Historia" title="Poznaj Adasia" />
+            <DSectionHeading :kicker="t('about.kicker')" :title="t('about.title', { name })" />
             <div class="grid grid-cols-2 gap-[22px] items-center">
-              <DPh label="Adaś podczas terapii" ratio="4/3" />
+              <DPh :label="t('about.photoAlt', { name })" ratio="4/3" />
               <div :style="{ color: c.ink, fontSize: '16px', lineHeight: 1.65 }">
-                <p style="margin: 0 0 12px;">Adaś urodził się z niedotlenieniem. Dziś ma 5 lat, uwielbia bajki o piesku i śmieje się na całe gardło, gdy tata podrzuca go do góry.</p>
-                <p style="margin: 0;">Ale codzienność to godziny ćwiczeń — bo każdy ruch musi wypracować od zera. Wierzymy, że konsekwentna rehabilitacja da mu maksymalną samodzielność.</p>
+                <p style="margin: 0 0 12px;">{{ t('d.classic.story1', { age: child.age }) }}</p>
+                <p style="margin: 0;">{{ t('d.classic.story2') }}</p>
               </div>
             </div>
             <div :style="{ marginTop: '28px', background: c.primarySoft, borderRadius: '18px', padding: '28px' }">
@@ -113,7 +117,7 @@ function scrollTo(id: string) {
           </div>
 
           <div id="wydatki" class="mt-16">
-            <DSectionHeading kicker="Transparentność" title="Wydatki i rozliczenia" sub="Każda wypłata z subkonta = jedna faktura. Pokazujemy wszystko." />
+            <DSectionHeading :kicker="t('expenses.kicker')" :title="t('expenses.title')" :sub="t('d.classic.expensesSub')" />
             <DExpenseLedger />
           </div>
         </div>
@@ -129,21 +133,21 @@ function scrollTo(id: string) {
     <!-- 1.5% -->
     <section id="podatek" :style="{ background: c.surfaceAlt, padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading kicker="Sezon PIT · do 30 kwietnia" title="Przekaż 1,5% podatku" sub="To nie wydatek — to część Twojego podatku, którą i tak oddajesz państwu. Możesz skierować ją do Adasia." />
+        <DSectionHeading :kicker="t('tax.kicker')" :title="t('tax.title')" :sub="t('tax.subtitle', { name })" />
         <DTaxBlock />
       </div>
     </section>
 
     <section :style="{ padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading :center="true" kicker="Społeczność" title="Pomagają nam" />
+        <DSectionHeading :center="true" :kicker="t('d.kicker.community')" :title="t('home.partners')" />
         <DPartners />
       </div>
     </section>
 
     <section :style="{ background: c.surfaceAlt, padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading :center="true" kicker="Wątpliwości?" title="Częste pytania" />
+        <DSectionHeading :center="true" :kicker="t('d.kicker.faq')" :title="t('home.faqTitle')" />
         <DFaq />
       </div>
     </section>

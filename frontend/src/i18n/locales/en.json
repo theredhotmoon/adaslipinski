@@ -226,7 +226,94 @@
       "partner": "this partner",
       "milestone": "this milestone",
       "post": "this post",
-      "expense": "this expense"
+      "expense": "this expense",
+      "faq": "this question"
+    }
+  },
+  "d": {
+    "nav": { "about": "About {name}", "budget": "Goals", "progress": "Updates", "tax": "1.5%", "transparency": "Transparency", "donate": "Donate" },
+    "switcher": {
+      "version": "Version",
+      "classic": "Classic",
+      "editorial": "Editorial",
+      "dashboard": "Transparent",
+      "classicBlurb": "Split hero + sticky donation card in a side column.",
+      "editorialBlurb": "Full-screen, emotional hero, magazine-style sections.",
+      "dashboardBlurb": "Numbers and accounting front and center."
+    },
+    "hero": { "donateMonthly": "Donate monthly", "learnStory": "Read the story", "donateBlik": "Donate with BLIK" },
+    "kicker": { "budget": "Goals", "faq": "Questions?", "community": "Community", "credibility": "Credibility" },
+    "costBarTitle": "Therapy cost / month",
+    "gapMonthly": "{amount} short per month",
+    "donateCardHint": "Regular support helps the most — stop whenever you want.",
+    "classic": {
+      "budgetTitle": "Specifics, not generalities",
+      "budgetSub": "Every item is real therapy you can fund.",
+      "progressSub": "This is where you see your support really working.",
+      "expensesSub": "Every payout from the sub-account = one invoice. We show everything.",
+      "story1": "{name} was born with oxygen deprivation. Today he is {age} years old, loves cartoons about a puppy and laughs out loud when his dad tosses him in the air.",
+      "story2": "But daily life means hours of exercises — because every movement has to be earned from scratch. We believe consistent rehabilitation will give him maximum independence."
+    },
+    "editorial": {
+      "budgetTitle": "Your 100 zł really matters",
+      "budgetSub": "{name}'s rehabilitation costs about 4,960 zł a month. The state covers about 1,200 zł — we raise the rest together.",
+      "aboutTitle": "Earning from scratch what comes naturally to others",
+      "aboutStory": "{name} spent his first weeks in intensive care, and a few months later we heard the diagnosis that changed our lives. Today we fight for his independence — step by step, session by session.",
+      "progressSub": "Short posts with specifics — because every złoty turns into movement.",
+      "expensesTitle": "We have nothing to hide",
+      "expensesSub": "Every payout from the sub-account is backed by an invoice."
+    },
+    "dashboard": {
+      "heroPill": "Public fundraiser · public-benefit foundation",
+      "heroTitle": "{name}'s rehabilitation costs {total} a month.",
+      "heroSub": "The state covers about {nfz}. {gap} is missing every month. We raise it from 1.5% tax and donations — and we show every złoty spent in the accounting.",
+      "statCost": "Cost / month",
+      "statNfz": "State covers",
+      "statGap": "Short / month",
+      "expensesTitle": "Funds don't sit idle in the account",
+      "expensesSub": "Donations and spending in balance. Every payout backed by an invoice from sub-account 433/L.",
+      "budgetTitle": "Monthly budget breakdown",
+      "budgetSub": "You can fund a specific therapy item.",
+      "trustTitle": "Why you can trust us",
+      "progressTitle": "What we've achieved thanks to you",
+      "progressSub": "Concrete results, with dates and amounts.",
+      "taxSub": "A free way to support {name} — it's part of the tax you pay anyway."
+    },
+    "trust": {
+      "oppTitle": "Public-benefit foundation",
+      "subaccount": "Sub-account",
+      "invoiceTitle": "Every invoice",
+      "invoiceSub": "public in the register",
+      "reportsTitle": "Reports",
+      "reportsSub": "in the NIW database"
+    },
+    "footer": {
+      "tagline": "Fundraiser run by {foundation}. Donations go to a sub-account marked “{purpose}” — not to a private account.",
+      "links": "Links",
+      "privacy": "Privacy policy",
+      "copyright": "© 2026 {site} · Lawful fundraiser · {email}"
+    },
+    "ledger": {
+      "receivedIn": "Received in {year}",
+      "fromTax": "From 1.5% tax",
+      "colDate": "Date",
+      "colDesc": "Description",
+      "colVendor": "Vendor",
+      "colAmount": "Amount",
+      "colInvoice": "Invoice"
+    },
+    "modal": {
+      "methodCardApple": "Card / Apple Pay",
+      "thanks": "Your {amount} goes straight to {name}'s rehabilitation. Adam and his parents thank you!",
+      "freqMonthly": "monthly",
+      "freqOnce": "one-time"
+    },
+    "tax": {
+      "step1Sub": "podatki.gov.pl or the mObywatel app",
+      "step2Sub": "choose {foundation}",
+      "step3Sub": "the crucial step",
+      "celLabel": "Earmark",
+      "infoShort": "The earmark <b>is not verified by the tax office</b> — if you skip it, your 1.5% goes to the foundation but not to {name}. Enter it in the <b>EARMARK</b> field."
     }
   }
 }
