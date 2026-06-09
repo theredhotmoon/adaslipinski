@@ -8,7 +8,7 @@ class SiteContentController extends Controller
 {
     public function index(): JsonResponse
     {
-        $beneficiary = Beneficiary::first();
+        $beneficiary = Beneficiary::with('heroImage')->first();
         $foundation  = Foundation::with(['accounts', 'links'])->first();
         $budgetItems = BudgetItem::active()->ordered()->get();
         $totalBudget = $budgetItems->sum('cost_pln');
@@ -28,6 +28,7 @@ class SiteContentController extends Controller
                 'ctaLabel'       => $beneficiary->cta_label,
                 'ctaBarLabel'    => $beneficiary->cta_bar_label,
                 'recurringDefault' => $beneficiary->recurring_default,
+                'heroImageUrl'   => $beneficiary->heroImage?->url,
             ] : null,
 
             'budget' => [
@@ -90,9 +91,10 @@ class SiteContentController extends Controller
                 'a'  => $f->answer,
             ]),
 
-            'partners' => Partner::active()->ordered()->get()->map(fn ($p) => [
-                'id'   => $p->id,
-                'name' => $p->name,
+            'partners' => Partner::active()->ordered()->with('logo')->get()->map(fn ($p) => [
+                'id'      => $p->id,
+                'name'    => $p->name,
+                'logoUrl' => $p->logo?->url,
             ]),
 
             'foundation' => $foundation ? [

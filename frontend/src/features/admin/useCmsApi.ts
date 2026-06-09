@@ -100,6 +100,10 @@ export const useCreatePartner = () =>
   useInvalidating((data: { name: string }) =>
     api.post('/admin/partners', data))
 
+export const useUpdatePartner = () =>
+  useInvalidating(({ id, ...data }: { id: number } & Record<string, unknown>) =>
+    api.put(`/admin/partners/${id}`, data))
+
 export const useDeletePartner = () =>
   useInvalidating((id: number) =>
     api.delete(`/admin/partners/${id}`))

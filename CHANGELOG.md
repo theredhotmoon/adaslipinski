@@ -7,6 +7,11 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Image upload for the **hero image** and **partner logos** (in addition to
+  news/progress): admins upload via the same `AdminImageUpload` control, and the
+  images render on mobile + desktop. Hero added a `hero_image_id` column on
+  beneficiaries; partner `logo_id` was already supported. `GET /cms/site` now
+  returns `child.heroImageUrl` and `partners[].logoUrl`.
 - Image upload for news/progress posts: admins can upload a photo to a post
   (file → `POST /admin/media` → attached via `image_id`), and posts render the
   real image (mobile + desktop) instead of a placeholder. New `AdminImageUpload`

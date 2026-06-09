@@ -11,7 +11,10 @@ class Beneficiary extends Model {
         'name', 'full_name', 'age', 'diagnosis', 'diagnosis_plain',
         'hero_kicker', 'hero_title', 'hero_subtitle',
         'cta_label', 'cta_bar_label', 'recurring_default', 'nfz_monthly_pln',
+        'hero_image_id',
     ];
+
+    public function heroImage() { return $this->belongsTo(Media::class, 'hero_image_id'); }
     protected $casts = [
         'recurring_default' => 'boolean', 'age' => 'integer', 'nfz_monthly_pln' => 'integer',
         'diagnosis' => Translatable::class, 'diagnosis_plain' => Translatable::class,

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Beneficiary;
+use App\Models\Partner;
 use App\Models\ProgressPost;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -67,5 +69,35 @@ class MediaUploadTest extends TestCase
         $this->post('/api/admin/media', [
             'file' => UploadedFile::fake()->create('p.jpg', 100, 'image/jpeg'),
         ], ['Accept' => 'application/json'])->assertUnauthorized();
+    }
+
+    public function test_uploaded_image_can_become_the_hero_image(): void
+    {
+        $this->actAsAdmin();
+        Beneficiary::factory()->create();
+
+        $mediaId = $this->post('/api/admin/media', [
+            'file' => UploadedFile::fake()->create('hero.jpg', 100, 'image/jpeg'),
+        ])->json('id');
+
+        $this->patchJson('/api/admin/beneficiary', ['hero_image_id' => $mediaId])->assertOk();
+
+        $site = $this->getJson('/api/cms/site?lang=pl')->assertOk()->json();
+        $this->assertNotEmpty($site['child']['heroImageUrl']);
+    }
+
+    public function test_uploaded_image_can_become_a_partner_logo(): void
+    {
+        $this->actAsAdmin();
+        $partner = Partner::factory()->create();
+
+        $mediaId = $this->post('/api/admin/media', [
+            'file' => UploadedFile::fake()->create('logo.png', 100, 'image/png'),
+        ])->json('id');
+
+        $this->putJson("/api/admin/partners/{$partner->id}", ['logo_id' => $mediaId])->assertOk();
+
+        $site = $this->getJson('/api/cms/site?lang=pl')->assertOk()->json();
+        $this->assertNotEmpty($site['partners'][0]['logoUrl']);
     }
 }

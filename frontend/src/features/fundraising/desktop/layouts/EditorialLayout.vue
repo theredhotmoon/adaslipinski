@@ -19,6 +19,7 @@ import DFooter from '../components/DFooter.vue'
 import DPartners from '../components/DPartners.vue'
 import FrIcon from '../../components/FrIcon.vue'
 import InlineText from '@/features/admin/components/InlineText.vue'
+import AdminImageUpload from '@/features/admin/components/AdminImageUpload.vue'
 import { useUpdateBeneficiary } from '@/features/admin/useCmsApi'
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
@@ -92,7 +93,12 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
 
       <!-- Wide hero image -->
       <div class="max-w-[1240px] mx-auto px-7 mt-12">
-        <DPh :label="name" ratio="21/9" :radius="26" />
+        <div style="position: relative;">
+          <DPh :label="name" :src="child.heroImageUrl" ratio="21/9" :radius="26" />
+          <div style="position: absolute; bottom: 14px; right: 14px;">
+            <AdminImageUpload :alt="t('hero.photoAlt', { name })" @uploaded="patchBeneficiary({ hero_image_id: $event.id })" />
+          </div>
+        </div>
       </div>
       <div class="h-[60px]" />
     </section>
