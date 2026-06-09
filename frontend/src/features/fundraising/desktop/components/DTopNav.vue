@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import FrIcon from '../../components/FrIcon.vue'
 import DBtn from './DBtn.vue'
+import DLangSwitcher from './DLangSwitcher.vue'
 import { siteConfig } from '@/config/site'
 import { dt } from '../desktopTheme'
 const { c } = dt
@@ -48,6 +49,8 @@ function scrollTo(id: string) {
           @mouseleave="($event.currentTarget as HTMLElement).style.cssText += `color:${c.inkSoft};background:transparent`"
         >{{ l }}</button>
       </nav>
+
+      <DLangSwitcher />
 
       <DBtn variant="primary" size="sm" @click="emit('donate')">
         <FrIcon name="heart" :size="16" :color="c.primaryInk" /> {{ t('d.nav.donate') }}
