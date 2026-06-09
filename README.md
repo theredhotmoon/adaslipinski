@@ -95,30 +95,84 @@ listed in `ADMIN_EMAILS`. Your first login sets that account's password.
 
 ## 🌍 Translations (Tolgee)
 
-UI strings live in `frontend/src/i18n/locales/{pl,en}.json`. You can edit those
-files directly, or manage translations in [Tolgee](https://tolgee.io) (free tier
-= 1,000 strings) and sync via the CLI. One-time setup:
+UI strings live in `frontend/src/i18n/locales/{pl,en}.json` — **edit those files
+directly and you never need Tolgee at all.** Tolgee is an *optional* translation
+manager (web UI, machine translation, translator collaboration) that syncs to and
+from those same files. This repo ships the integration pre-wired; you just add a
+project and a token.
 
-1. Create a free project at [app.tolgee.io](https://app.tolgee.io) and generate a
-   **Project API Key** (PAK).
-2. Put your project ID in `frontend/.tolgeerc.json` (`"projectId"`), and export
-   the key: `export TOLGEE_API_KEY=tgpak_…` (PowerShell: `$env:TOLGEE_API_KEY=…`).
-3. Seed Tolgee with the existing keys: `cd frontend && npm run i18n:push:seed`.
+### Installation
 
-Day-to-day (from `frontend/`):
+The [Tolgee CLI](https://docs.tolgee.io/tolgee-cli) is already a dev dependency
+(`@tolgee/cli`), so a normal `cd frontend && npm install` is all you need. Config
+lives in `frontend/.tolgeerc.json` (Tolgee Cloud, `JSON_ICU` format, pushing/
+pulling `pl.json` + `en.json`). For a fresh install elsewhere:
 
 ```bash
-npm run i18n:pull      # Tolgee → local JSON (after translating in the UI)
-npm run i18n:push      # local JSON → Tolgee (adds new keys, keeps existing)
-npm run i18n:compare   # diff local code/keys against the Tolgee project
+npm install -D @tolgee/cli      # already in package.json here
 ```
 
-**MCP:** `.mcp.json` registers the official Tolgee MCP server (HTTP), so Claude
-can search/update translations directly — it reads `TOLGEE_API_KEY` from your env.
+### The API token
 
-> Note: the locale files use Vue I18n `{name}`-style placeholders; `.tolgeerc.json`
-> is set to `JSON_ICU`. Verify the first round-trip preserves placeholders/markup
-> and adjust `format` if your project needs a different mapping.
+The CLI and the MCP server authenticate with a Tolgee **API token**. There are
+two kinds:
+
+| Token | Prefix | Scope | Use it for |
+| ----- | ------ | ----- | ---------- |
+| **Project API Key (PAK)** — recommended | `tgpak_` | a single project | CLI sync, CI, the MCP server |
+| Personal Access Token (PAT) | `tgpat_` | every project you can access | when you need cross-project access (then pass `--project-id`) |
+
+**Create a Project API Key:**
+
+1. Create a free project at [app.tolgee.io](https://app.tolgee.io) (free tier =
+   1,000 strings, unlimited seats). Note its **project ID** (in the URL/settings).
+2. In the project → **Integrate** (or *Settings → API keys*) → **generate a
+   Project API Key**. The Integrate wizard preselects the scopes the CLI needs
+   (`keys` + `translations` read/write, `languages`); accept those.
+3. Copy the `tgpak_…` value — it's shown **once**.
+
+**Store it as an environment variable — never commit it.** `.mcp.json` and the
+CLI both read `TOLGEE_API_KEY` from your shell:
+
+```bash
+export TOLGEE_API_KEY=tgpak_xxxxxxxxxxxxxxxxxxxx     # macOS/Linux
+$env:TOLGEE_API_KEY = "tgpak_xxxxxxxxxxxxxxxxxxxx"   # PowerShell
+```
+
+For CI, add it as a repository secret. `frontend/.env.example` documents the var.
+
+### One-time setup
+
+1. Put your project ID in `frontend/.tolgeerc.json` → `"projectId": <id>`.
+2. Export `TOLGEE_API_KEY` (above).
+3. Seed Tolgee with the existing keys: `cd frontend && npm run i18n:push:seed`.
+
+### Day-to-day (from `frontend/`)
+
+```bash
+npm run i18n:pull      # Tolgee → local JSON (after translating in the web UI)
+npm run i18n:push      # local JSON → Tolgee (adds new keys, keeps existing)
+npm run i18n:compare   # diff the keys used in code against the Tolgee project
+```
+
+### MCP server (AI-assisted translation)
+
+`.mcp.json` registers the official **Tolgee MCP server** (HTTP,
+`https://app.tolgee.io/mcp/developer`, authenticated with the `X-API-Key` header
+from `${TOLGEE_API_KEY}`). With it, Claude Code / Claude Desktop can search keys,
+add/update translations, and trigger machine translation without leaving the
+editor. Your client will prompt to approve the server on first use.
+
+### Self-hosting
+
+To self-host Tolgee instead of using Cloud, change `apiUrl` in
+`frontend/.tolgeerc.json` and the `url` in `.mcp.json` to your instance, and
+supply your own machine-translation provider key.
+
+> **Format note:** the locale files use Vue I18n `{name}`-style placeholders and
+> `.tolgeerc.json` is set to `JSON_ICU`. Verify your first `push:seed` round-trip
+> preserves `{name}` placeholders and `<b>` markup; switch `format` if your
+> project needs a different mapping.
 
 ## 🔒 Security notes
 
