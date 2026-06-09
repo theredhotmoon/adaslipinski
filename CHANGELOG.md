@@ -7,6 +7,14 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Tolgee translation sync (optional): `@tolgee/cli` + `frontend/.tolgeerc.json`
+  (Tolgee Cloud, JSON_ICU), `npm run i18n:push/pull/compare` scripts, the
+  official Tolgee MCP server in `.mcp.json`, and a README "Translations" guide.
+  Locale files remain the source of truth; the API key lives in shell env.
+- Desktop language switcher (`DLangSwitcher`) in the top nav — PL/EN parity with
+  the mobile shell across all three desktop layouts.
+- Internationalization: every UI string (mobile + desktop chrome) migrated to
+  Vue I18n `t()` keys, on top of the already-bilingual CMS content.
 - Test suites: backend PHPUnit (Translatable cast, locale-aware `/cms/site`,
   auth/login whitelist, protected routes, admin CRUD incl. per-locale writes,
   health) and frontend Vitest (i18n, axios interceptor, `useSiteContent`,

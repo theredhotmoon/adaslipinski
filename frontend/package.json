@@ -13,7 +13,11 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "i18n:push": "tolgee push",
+    "i18n:push:seed": "tolgee push --force-mode OVERRIDE",
+    "i18n:pull": "tolgee pull",
+    "i18n:compare": "tolgee compare"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
@@ -29,6 +33,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@tolgee/cli": "^2.16.1",
     "@types/node": "^24.12.3",
     "@vitejs/plugin-vue": "^6.0.6",
     "@vitest/coverage-v8": "^4.1.7",

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.tolgee.io/cli-schema.json",
+  "apiUrl": "https://app.tolgee.io",
+  "format": "JSON_ICU",
+  "patterns": ["./src/**/*.{ts,vue}"],
+  "push": {
+    "filesTemplate": "./src/i18n/locales/{languageTag}.json",
+    "languages": ["pl", "en"]
+  },
+  "pull": {
+    "path": "./src/i18n/locales"
+  }
+}

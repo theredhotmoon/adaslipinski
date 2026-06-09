@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "tolgee": {
+      "type": "http",
+      "url": "https://app.tolgee.io/mcp/developer",
+      "headers": {
+        "X-API-Key": "${TOLGEE_API_KEY}"
+      }
+    }
+  }
+}
