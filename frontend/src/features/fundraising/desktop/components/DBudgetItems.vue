@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrIcon from '../../components/FrIcon.vue'
 import InlineText from '@/features/admin/components/InlineText.vue'
 import InlineNumber from '@/features/admin/components/InlineNumber.vue'
@@ -9,6 +10,7 @@ import { dt } from '../desktopTheme'
 import { data as staticData, zl } from '../../data'
 import type { SiteContent } from '../../types'
 const { c } = dt
+const { t } = useI18n()
 
 defineProps<{ cols?: number }>()
 const emit = defineEmits<{ donate: [{ amount: number; freq: 'monthly'; item: string }] }>()
@@ -31,10 +33,10 @@ const { mutate: updateBudgetItem } = useUpdateBudgetItem()
           <InlineText :value="it.name" @save="updateBudgetItem({ id: it.dbId, name: $event })" :style="{ fontWeight: 800, color: c.ink, fontSize: '16px' }" />
           <InlineNumber :value="it.cost" :min="0" @save="updateBudgetItem({ id: it.dbId, cost_pln: $event })" :style="{ fontWeight: 900, color: c.ink, fontSize: '16px', whiteSpace: 'nowrap' }">{{ zl(it.cost) }}</InlineNumber>
         </div>
-        <div :style="{ fontSize: '12.5px', color: c.inkSoft, marginTop: '2px' }">{{ it.freq }} · /miesiąc</div>
+        <div :style="{ fontSize: '12.5px', color: c.inkSoft, marginTop: '2px' }">{{ it.freq }} · {{ t('budget.perMonth') }}</div>
         <InlineText tag="div" :value="it.note" :multiline="true" @save="updateBudgetItem({ id: it.dbId, note: $event })" :style="{ fontSize: '13.5px', color: c.inkSoft, marginTop: '7px', lineHeight: 1.45 }" />
         <button :style="{ marginTop: '11px', border: `1.5px solid ${c.primary}`, background: 'transparent', color: c.primaryDeep, fontWeight: 800, fontSize: '13.5px', padding: '8px 15px', borderRadius: '10px', cursor: 'pointer', fontFamily: dt.font }" @click="emit('donate', { amount: Math.min(200, it.cost), freq: 'monthly', item: it.name })">
-          Sfinansuj tę pozycję
+          {{ t('budget.fund') }}
         </button>
       </div>
     </div>

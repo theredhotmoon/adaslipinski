@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import InlineText from '@/features/admin/components/InlineText.vue'
 import AdminAdd from '@/features/admin/components/AdminAdd.vue'
 import AdminDelete from '@/features/admin/components/AdminDelete.vue'
@@ -10,6 +11,7 @@ import { dt } from '../desktopTheme'
 import { data as staticData } from '../../data'
 import type { SiteContent } from '../../types'
 const { c } = dt
+const { t } = useI18n()
 defineProps<{ horizontal?: boolean }>()
 
 const siteData = inject<Ref<SiteContent>>('siteData')
@@ -50,23 +52,23 @@ function submitMilestone() {
       <div class="pb-5 flex-1">
         <div class="flex items-center gap-2">
           <InlineText :value="m.year" @save="updateMilestone({ id: m.id, year: $event })" :style="{ fontWeight: 900, color: c.primaryDeep, fontSize: '14px' }" />
-          <AdminDelete label="kamień milowy" @click="deleteMilestone(m.id)" />
+          <AdminDelete :label="t('admin.del.milestone')" @click="deleteMilestone(m.id)" />
         </div>
         <InlineText tag="div" :value="m.text" @save="updateMilestone({ id: m.id, label: $event })" :style="{ color: c.ink, fontSize: '16px', marginTop: '1px' }" />
       </div>
     </div>
     <div class="max-w-[280px] mt-2">
-      <AdminAdd label="Dodaj kamień milowy" @click="showAdd = true" />
+      <AdminAdd :label="t('about.addMilestone')" @click="showAdd = true" />
     </div>
   </div>
 
-  <AdminFormModal title="Dodaj kamień milowy" :open="showAdd" :saving="creating" @close="showAdd = false" @save="submitMilestone">
+  <AdminFormModal :title="t('about.addMilestone')" :open="showAdd" :saving="creating" @close="showAdd = false" @save="submitMilestone">
     <label class="block mb-3">
-      <span class="text-xs font-bold text-gray-500 mb-1 block">Rok</span>
+      <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('about.yearLabel') }}</span>
       <input v-model="newMs.year" maxlength="4" placeholder="2026" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
     </label>
     <label class="block">
-      <span class="text-xs font-bold text-gray-500 mb-1 block">Opis</span>
+      <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('about.descLabel') }}</span>
       <input v-model="newMs.label" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
     </label>
   </AdminFormModal>

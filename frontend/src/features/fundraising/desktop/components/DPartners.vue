@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import AdminAdd from '@/features/admin/components/AdminAdd.vue'
 import AdminDelete from '@/features/admin/components/AdminDelete.vue'
 import AdminFormModal from '@/features/admin/components/AdminFormModal.vue'
@@ -9,6 +10,7 @@ import { dt } from '../desktopTheme'
 import { data as staticData } from '../../data'
 import type { SiteContent } from '../../types'
 const { c } = dt
+const { t } = useI18n()
 
 const siteData = inject<Ref<SiteContent>>('siteData')
 const partners = computed(() => siteData?.value?.partners ?? staticData.partners.map((name, i) => ({ id: i + 1, name })) as any)
@@ -33,15 +35,15 @@ function submit() {
       :style="{ padding: '13px 22px', background: c.surface, border: `1px solid ${c.line}`, borderRadius: '12px', fontWeight: 800, fontSize: '15.5px', color: c.ink, display: 'flex', alignItems: 'center', gap: '10px' }"
     >
       {{ typeof p === 'string' ? p : p.name }}
-      <AdminDelete v-if="p.id" label="partnera" @click="deletePartner(p.id)" />
+      <AdminDelete v-if="p.id" :label="t('admin.del.partner')" @click="deletePartner(p.id)" />
     </div>
     <div class="max-w-[200px]">
-      <AdminAdd label="Dodaj partnera" @click="showAdd = true" />
+      <AdminAdd :label="t('home.addPartner')" @click="showAdd = true" />
     </div>
 
-    <AdminFormModal title="Dodaj partnera" :open="showAdd" :saving="creating" @close="showAdd = false" @save="submit">
+    <AdminFormModal :title="t('home.addPartner')" :open="showAdd" :saving="creating" @close="showAdd = false" @save="submit">
       <label class="block">
-        <span class="text-xs font-bold text-gray-500 mb-1 block">Nazwa</span>
+        <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('home.partnerNameLabel') }}</span>
         <input v-model="newName" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
       </label>
     </AdminFormModal>

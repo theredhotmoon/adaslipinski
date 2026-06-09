@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrCard from '../components/FrCard.vue'
 import FrIcon from '../components/FrIcon.vue'
 import FrPh from '../components/FrPh.vue'
@@ -8,12 +9,15 @@ import FrSectionLabel from '../components/FrSectionLabel.vue'
 import FrCopyField from '../components/FrCopyField.vue'
 import InlineText from '@/features/admin/components/InlineText.vue'
 import { useUpdateFoundation } from '@/features/admin/useCmsApi'
+import { siteConfig } from '@/config/site'
 import { theme, data as staticData } from '../data'
 import type { SiteContent } from '../types'
 
 const { c, f } = theme
+const { t } = useI18n()
 const siteData = inject<Ref<SiteContent>>('siteData')
 const d = computed(() => siteData?.value?.foundation ?? staticData.foundation as any)
+const shieldNote = computed(() => t('foundation.shieldNote', { name: siteConfig.beneficiary.name }))
 
 const { mutate: patchFoundation } = useUpdateFoundation()
 </script>
@@ -21,9 +25,9 @@ const { mutate: patchFoundation } = useUpdateFoundation()
 <template>
   <div style="padding-bottom: 28px;">
     <div style="padding: 16px 18px 6px;">
-      <div :style="{ fontSize: '12.5px', fontWeight: 800, color: c.primary, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }">Wiarygodność</div>
-      <h1 :style="{ margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '30px', lineHeight: 1.08, letterSpacing: f.hLetter, color: c.ink }">Fundacja</h1>
-      <p :style="{ margin: '10px 0 0', color: c.inkSoft, fontSize: '15px', lineHeight: 1.5 }">Nie zbieramy na konto prywatne. Oto dokładnie, dokąd trafiają pieniądze.</p>
+      <div :style="{ fontSize: '12.5px', fontWeight: 800, color: c.primary, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }">{{ t('foundation.kicker') }}</div>
+      <h1 :style="{ margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '30px', lineHeight: 1.08, letterSpacing: f.hLetter, color: c.ink }">{{ t('foundation.title') }}</h1>
+      <p :style="{ margin: '10px 0 0', color: c.inkSoft, fontSize: '15px', lineHeight: 1.5 }">{{ t('foundation.subtitle') }}</p>
     </div>
 
     <div style="padding: 16px 18px 0;">
@@ -52,7 +56,7 @@ const { mutate: patchFoundation } = useUpdateFoundation()
             <InlineText :value="d.regon" @save="patchFoundation({ regon: $event })" :style="{ fontWeight: 700, color: c.ink, fontSize: '14px', fontFamily: `ui-monospace, Menlo, monospace` }" />
           </div>
           <div>
-            <div :style="{ fontSize: '11px', color: c.inkSoft, fontWeight: 600 }">Subkonto</div>
+            <div :style="{ fontSize: '11px', color: c.inkSoft, fontWeight: 600 }">{{ t('foundation.subaccount') }}</div>
             <InlineText :value="d.cel" @save="patchFoundation({ cel: $event })" :style="{ fontWeight: 700, color: c.ink, fontSize: '14px', fontFamily: `ui-monospace, Menlo, monospace` }" />
           </div>
         </div>
@@ -62,14 +66,12 @@ const { mutate: patchFoundation } = useUpdateFoundation()
     <div style="padding: 16px 18px 0;">
       <FrCard :style="{ background: c.primarySoft, border: 'none', display: 'flex', gap: '10px' }">
         <FrIcon name="shield" :size="24" :color="c.primary" style="flex-shrink: 0;" />
-        <div :style="{ fontSize: '13.5px', color: c.ink, lineHeight: 1.55 }">
-          Wszystkie wpłaty z dopiskiem <b>433/L</b> trafiają na wydzielone subkonto fundacji. Środki wypłacane są wyłącznie na podstawie faktur na rehabilitację Adasia. <b>Rodzice nie mogą nimi dysponować prywatnie.</b>
-        </div>
+        <div :style="{ fontSize: '13.5px', color: c.ink, lineHeight: 1.55 }" v-html="shieldNote" />
       </FrCard>
     </div>
 
     <div style="padding: 18px 18px 0;">
-      <FrSectionLabel>Oficjalne źródła</FrSectionLabel>
+      <FrSectionLabel>{{ t('foundation.officialSources') }}</FrSectionLabel>
       <FrCard :pad="0" :style="{ overflow: 'hidden' }">
         <button
           v-for="(l, i) in d.links"
@@ -84,9 +86,9 @@ const { mutate: patchFoundation } = useUpdateFoundation()
     </div>
 
     <div style="padding: 18px 18px 0;">
-      <FrSectionLabel>Konta do przelewu</FrSectionLabel>
+      <FrSectionLabel>{{ t('foundation.transferAccounts') }}</FrSectionLabel>
       <FrCopyField v-for="a in d.accounts" :key="a.cur" :label="a.cur" :value="a.iban" />
-      <FrCopyField label="Tytuł przelewu" :value="d.cel" :mono="false" />
+      <FrCopyField :label="t('foundation.transferTitle')" :value="d.cel" :mono="false" />
     </div>
   </div>
 </template>

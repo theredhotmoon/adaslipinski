@@ -17,9 +17,13 @@ import { dt } from '../desktopTheme'
 import DPartners from '../components/DPartners.vue'
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { siteConfig } from '@/config/site'
 import { data as staticData, zl } from '../../data'
 import type { SiteContent } from '../../types'
 const { c } = dt
+const { t } = useI18n()
+const name = siteConfig.beneficiary.name
 
 const emit = defineEmits<{
   donate: [{ amount: number; freq: 'once' | 'monthly'; item?: string }]
@@ -29,9 +33,9 @@ const siteData = inject<Ref<SiteContent>>('siteData')
 const b = computed(() => siteData?.value?.budget ?? staticData.budget)
 const foundation = computed(() => siteData?.value?.foundation ?? staticData.foundation as any)
 const statItems = computed(() => [
-  ['Koszt / mies.', zl(b.value.total), c.ink],
-  ['Pokrywa NFZ', zl(b.value.nfz), c.inkSoft],
-  ['Brakuje / mies.', zl(b.value.gap), c.primaryDeep],
+  [t('d.dashboard.statCost'), zl(b.value.total), c.ink],
+  [t('d.dashboard.statNfz'), zl(b.value.nfz), c.inkSoft],
+  [t('d.dashboard.statGap'), zl(b.value.gap), c.primaryDeep],
 ] as const)
 </script>
 
@@ -43,12 +47,12 @@ const statItems = computed(() => [
     <section :style="{ background: c.heroBg }">
       <div class="max-w-[1200px] mx-auto px-7 py-14" style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: start;">
         <div>
-          <DPill tone="soft" style="margin-bottom: 18px;">Zbiórka jawna · Fundacja OPP</DPill>
+          <DPill tone="soft" style="margin-bottom: 18px;">{{ t('d.dashboard.heroPill') }}</DPill>
           <h1 :style="{ margin: 0, fontFamily: dt.font, fontWeight: 900, fontSize: '50px', lineHeight: 1.07, letterSpacing: '-0.02em', color: c.ink }">
-            Rehabilitacja Adasia kosztuje {{ zl(b.total) }} miesięcznie.
+            {{ t('d.dashboard.heroTitle', { name, total: zl(b.total) }) }}
           </h1>
           <p :style="{ margin: '18px 0 26px', fontSize: '18px', lineHeight: 1.55, color: c.inkSoft, maxWidth: '540px' }">
-            NFZ pokrywa ok. {{ zl(b.nfz) }}. Brakuje {{ zl(b.gap) }} co miesiąc. Składamy je z 1,5% PIT i darowizn — a każdą wydaną złotówkę pokazujemy w rozliczeniu.
+            {{ t('d.dashboard.heroSub', { nfz: zl(b.nfz), gap: zl(b.gap) }) }}
           </p>
           <div class="grid grid-cols-3 gap-3.5 mb-[18px]">
             <div v-for="([l, v, col]) in statItems" :key="l" :style="{ background: c.surface, border: `1px solid ${c.line}`, borderRadius: '14px', padding: '18px' }">
@@ -67,7 +71,7 @@ const statItems = computed(() => [
     <!-- Transparentność -->
     <section id="wydatki" :style="{ padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading kicker="Transparentność" title="Pieniądze nie zalegają na koncie" sub="Wpłaty i wydatki w równowadze. Każda wypłata poparta fakturą z subkonta 433/L." />
+        <DSectionHeading :kicker="t('expenses.kicker')" :title="t('d.dashboard.expensesTitle')" :sub="t('d.dashboard.expensesSub')" />
         <DExpenseLedger />
       </div>
     </section>
@@ -75,7 +79,7 @@ const statItems = computed(() => [
     <!-- Budżet -->
     <section id="budzet" :style="{ background: c.surfaceAlt, padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading kicker="Na co zbieramy" title="Rozbicie miesięcznego budżetu" sub="Możesz sfinansować konkretną pozycję terapii." />
+        <DSectionHeading :kicker="t('d.kicker.budget')" :title="t('d.dashboard.budgetTitle')" :sub="t('d.dashboard.budgetSub')" />
         <DBudgetItems :cols="3" @donate="emit('donate', $event)" />
       </div>
     </section>
@@ -83,7 +87,7 @@ const statItems = computed(() => [
     <!-- Zaufanie + Postępy -->
     <section :style="{ padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading kicker="Wiarygodność" title="Dlaczego możesz nam zaufać" />
+        <DSectionHeading :kicker="t('d.kicker.credibility')" :title="t('d.dashboard.trustTitle')" />
         <DTrustBadges :columns="4" />
         <div :style="{ marginTop: '28px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', alignItems: 'center', background: c.primarySoft, borderRadius: '18px', padding: '28px' }">
           <DQuote />
@@ -101,7 +105,7 @@ const statItems = computed(() => [
     <!-- Postępy -->
     <section id="postepy" :style="{ background: c.surfaceAlt, padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading kicker="Dziennik" title="Co dzięki Wam osiągnęliśmy" sub="Konkretne efekty, z datami i kwotami." />
+        <DSectionHeading :kicker="t('progress.kicker')" :title="t('d.dashboard.progressTitle')" :sub="t('d.dashboard.progressSub')" />
         <DProgressCards :cols="3" :limit="3" />
       </div>
     </section>
@@ -109,14 +113,14 @@ const statItems = computed(() => [
     <!-- 1.5% -->
     <section id="podatek" :style="{ padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading kicker="Sezon PIT · do 30 kwietnia" title="Przekaż 1,5% podatku" sub="Darmowy sposób, by wesprzeć Adasia — to część podatku, którą i tak oddajesz." />
+        <DSectionHeading :kicker="t('tax.kicker')" :title="t('tax.title')" :sub="t('d.dashboard.taxSub', { name })" />
         <DTaxBlock />
       </div>
     </section>
 
     <section :style="{ background: c.surfaceAlt, padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading :center="true" kicker="Wątpliwości?" title="Częste pytania" />
+        <DSectionHeading :center="true" :kicker="t('d.kicker.faq')" :title="t('home.faqTitle')" />
         <DFaq />
         <div class="mt-10">
           <DPartners />

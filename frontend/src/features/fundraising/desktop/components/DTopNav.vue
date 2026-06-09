@@ -1,18 +1,23 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrIcon from '../../components/FrIcon.vue'
 import DBtn from './DBtn.vue'
+import { siteConfig } from '@/config/site'
 import { dt } from '../desktopTheme'
 const { c } = dt
+const { t } = useI18n()
+const name = siteConfig.beneficiary.name
 
 const emit = defineEmits<{ donate: [] }>()
 
-const links = [
-  ['O Adasiu', 'o-adasiu'],
-  ['Na co zbieramy', 'budzet'],
-  ['Postępy', 'postepy'],
-  ['1,5%', 'podatek'],
-  ['Transparentność', 'wydatki'],
-]
+const links = computed<[string, string][]>(() => [
+  [t('d.nav.about', { name }), 'o-adasiu'],
+  [t('d.nav.budget'), 'budzet'],
+  [t('d.nav.progress'), 'postepy'],
+  [t('d.nav.tax'), 'podatek'],
+  [t('d.nav.transparency'), 'wydatki'],
+])
 
 function scrollTo(id: string) {
   const el = document.getElementById(id)
@@ -30,7 +35,7 @@ function scrollTo(id: string) {
         <span :style="{ width: '34px', height: '34px', borderRadius: '10px', background: c.primary, display: 'grid', placeItems: 'center' }">
           <FrIcon name="heart" :size="19" :color="c.primaryInk" />
         </span>
-        <span :style="{ fontWeight: 900, fontSize: '19px', fontFamily: dt.font }">Adaś Lipiński</span>
+        <span :style="{ fontWeight: 900, fontSize: '19px', fontFamily: dt.font }">{{ siteConfig.siteName }}</span>
       </a>
 
       <nav class="flex gap-1 ml-3 flex-1">
@@ -45,7 +50,7 @@ function scrollTo(id: string) {
       </nav>
 
       <DBtn variant="primary" size="sm" @click="emit('donate')">
-        <FrIcon name="heart" :size="16" :color="c.primaryInk" /> Wpłać
+        <FrIcon name="heart" :size="16" :color="c.primaryInk" /> {{ t('d.nav.donate') }}
       </DBtn>
     </div>
   </header>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import DTopNav from '../components/DTopNav.vue'
 import DPh from '../components/DPh.vue'
 import DPill from '../components/DPill.vue'
@@ -21,10 +22,13 @@ import InlineText from '@/features/admin/components/InlineText.vue'
 import { useUpdateBeneficiary } from '@/features/admin/useCmsApi'
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { siteConfig } from '@/config/site'
 import { dt } from '../desktopTheme'
 import { data as staticData } from '../../data'
 import type { SiteContent } from '../../types'
 const { c } = dt
+const { t } = useI18n()
+const name = siteConfig.beneficiary.name
 
 const emit = defineEmits<{
   donate: [{ amount: number; freq: 'once' | 'monthly'; item?: string }]
@@ -35,6 +39,7 @@ const freq = ref<'once' | 'monthly'>('monthly')
 const siteData = inject<Ref<SiteContent>>('siteData')
 const child = computed(() => siteData?.value?.child ?? staticData.child as any)
 const amounts = computed(() => siteData?.value?.amounts ?? staticData.amounts)
+const freqOpts = computed<[string, string][]>(() => [['once', t('donate.once')], ['monthly', t('donate.monthly')]])
 const { mutate: patchBeneficiary } = useUpdateBeneficiary()
 </script>
 
@@ -68,7 +73,7 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
       <div class="max-w-[880px] mx-auto px-7 mt-8">
         <div :style="{ background: c.surface, border: `1px solid ${c.line}`, borderRadius: '20px', padding: '18px', display: 'flex', gap: '12px', alignItems: 'center', boxShadow: '0 24px 50px -28px rgba(60,50,20,0.4)', flexWrap: 'wrap', justifyContent: 'center' }">
           <div :style="{ display: 'flex', background: c.surfaceAlt, borderRadius: '12px', padding: '4px', gap: '4px', border: `1px solid ${c.line}` }">
-            <button v-for="[k, l] in [['once', 'Jednorazowo'], ['monthly', 'Co miesiąc']]" :key="k"
+            <button v-for="[k, l] in freqOpts" :key="k"
               :style="{ padding: '11px 16px', border: 'none', cursor: 'pointer', borderRadius: '9px', fontFamily: dt.font, fontWeight: 800, fontSize: '14px', whiteSpace: 'nowrap', background: freq === k ? c.primary : 'transparent', color: freq === k ? c.primaryInk : c.inkSoft }"
               @click="freq = k as 'once' | 'monthly'"
             >{{ l }}</button>
@@ -80,14 +85,14 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
             >{{ a }} zł</button>
           </div>
           <DBtn variant="primary" size="md" @click="emit('donate', { amount: 100, freq })">
-            <FrIcon name="blik" :size="18" :color="c.primaryInk" /> Wpłać BLIK-iem
+            <FrIcon name="blik" :size="18" :color="c.primaryInk" /> {{ t('d.hero.donateBlik') }}
           </DBtn>
         </div>
       </div>
 
       <!-- Wide hero image -->
       <div class="max-w-[1240px] mx-auto px-7 mt-12">
-        <DPh label="Adaś" ratio="21/9" :radius="26" />
+        <DPh :label="name" ratio="21/9" :radius="26" />
       </div>
       <div class="h-[60px]" />
     </section>
@@ -96,11 +101,11 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
     <section id="o-adasiu" :style="{ padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
         <div class="grid grid-cols-2 gap-14 items-center">
-          <DPh label="Adaś z rodzicami" ratio="4/3" :radius="22" />
+          <DPh :label="t('about.photoAlt', { name })" ratio="4/3" :radius="22" />
           <div>
-            <DSectionHeading kicker="Historia" title="Wypracowuje od zera to, co innym przychodzi samo" />
+            <DSectionHeading :kicker="t('about.kicker')" :title="t('d.editorial.aboutTitle')" />
             <p :style="{ margin: 0, fontSize: '17px', lineHeight: 1.7, color: c.inkSoft }">
-              Pierwsze tygodnie Adaś spędził na OIOM-ie, a kilka miesięcy później usłyszeliśmy diagnozę, która zmieniła nasze życie. Dziś walczymy o jego samodzielność — krok po kroku, sesja po sesji.
+              {{ t('d.editorial.aboutStory', { name }) }}
             </p>
             <div class="mt-6"><DMilestones /></div>
           </div>
@@ -118,7 +123,7 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
     <!-- Budżet -->
     <section id="budzet" :style="{ background: c.surfaceAlt, padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading :center="true" kicker="Na co zbieramy" title="Twoje 100 zł naprawdę coś znaczy" sub="Rehabilitacja Adasia kosztuje ok. 4 960 zł miesięcznie. NFZ pokrywa ok. 1 200 zł — resztę składamy razem." />
+        <DSectionHeading :center="true" :kicker="t('d.kicker.budget')" :title="t('d.editorial.budgetTitle')" :sub="t('d.editorial.budgetSub', { name })" />
         <div class="max-w-[720px] mx-auto mb-8"><DCostBar :big="true" /></div>
         <DBudgetItems :cols="3" @donate="emit('donate', $event)" />
       </div>
@@ -127,7 +132,7 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
     <!-- Postępy -->
     <section id="postepy" :style="{ padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading kicker="Dziennik" title="Postępy Adasia" sub="Krótkie wpisy z konkretami — bo każda złotówka zamienia się w ruch." />
+        <DSectionHeading :kicker="t('progress.kicker')" :title="t('progress.title', { name })" :sub="t('d.editorial.progressSub')" />
         <DProgressCards :cols="3" :limit="3" />
       </div>
     </section>
@@ -135,7 +140,7 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
     <!-- 1.5% -->
     <section id="podatek" :style="{ background: c.surfaceAlt, padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading :center="true" kicker="Sezon PIT · do 30 kwietnia" title="Przekaż 1,5% podatku" />
+        <DSectionHeading :center="true" :kicker="t('tax.kicker')" :title="t('tax.title')" />
         <DTaxBlock />
       </div>
     </section>
@@ -143,7 +148,7 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
     <!-- Transparentność -->
     <section id="wydatki" :style="{ padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading kicker="Transparentność" title="Nie mamy nic do ukrycia" sub="Każda wypłata z subkonta poparta fakturą." />
+        <DSectionHeading :kicker="t('expenses.kicker')" :title="t('d.editorial.expensesTitle')" :sub="t('d.editorial.expensesSub')" />
         <DExpenseLedger />
         <div class="h-10" />
         <DTrustBadges :columns="4" />
@@ -152,7 +157,7 @@ const { mutate: patchBeneficiary } = useUpdateBeneficiary()
 
     <section :style="{ background: c.surfaceAlt, padding: '66px 0' }">
       <div class="max-w-[1200px] mx-auto px-7">
-        <DSectionHeading :center="true" kicker="Wątpliwości?" title="Częste pytania" />
+        <DSectionHeading :center="true" :kicker="t('d.kicker.faq')" :title="t('home.faqTitle')" />
         <DFaq />
         <div class="mt-10">
           <DPartners />

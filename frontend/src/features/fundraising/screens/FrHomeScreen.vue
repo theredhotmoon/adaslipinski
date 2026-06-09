@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrCard from '../components/FrCard.vue'
 import FrBtn from '../components/FrBtn.vue'
 import FrPill from '../components/FrPill.vue'
@@ -19,10 +20,13 @@ import {
   useUpdateFaq, useCreateFaq, useDeleteFaq,
   useCreatePartner, useDeletePartner,
 } from '@/features/admin/useCmsApi'
+import { siteConfig } from '@/config/site'
 import { theme, data as staticData, zl } from '../data'
 import type { SiteContent } from '../types'
 
 const { c, r, f } = theme
+const { t } = useI18n()
+const name = siteConfig.beneficiary.name
 
 const emit = defineEmits<{ donate: [{ amount: number; freq: 'once' | 'monthly'; item?: string }]; navigate: [string] }>()
 
@@ -80,7 +84,7 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
           <InlineText :value="d.child?.heroKicker ?? theme.copy.heroKicker" @save="patchBeneficiary({ hero_kicker: $event })" />
         </FrPill>
       </div>
-      <FrPh label="Zdjęcie Adasia — twarz, uśmiech (nie szpital)" :h="210" />
+      <FrPh :label="t('hero.photoAlt', { name })" :h="210" />
       <InlineText
         tag="h1"
         :value="d.child?.heroTitle ?? theme.copy.heroTitle"
@@ -113,7 +117,7 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
           />
           · {{ zl(amt() || 0) }}{{ freq === 'monthly' ? '/mc' : '' }}
         </FrBtn>
-        <div :style="{ marginTop: '9px', textAlign: 'center', fontSize: '12px', color: c.inkSoft }">BLIK · karta · Apple/Google Pay · przelew</div>
+        <div :style="{ marginTop: '9px', textAlign: 'center', fontSize: '12px', color: c.inkSoft }">{{ t('hero.paymentMethods') }}</div>
       </FrCard>
     </div>
 
@@ -123,7 +127,7 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
     <div style="padding: 16px 18px 0;">
       <FrCard>
         <div :style="{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '4px' }">
-          <span :style="{ fontWeight: 800, color: c.ink, fontSize: '15px' }">Koszt rehabilitacji / miesiąc</span>
+          <span :style="{ fontWeight: 800, color: c.ink, fontSize: '15px' }">{{ t('common.monthlyCost') }}</span>
           <span :style="{ fontWeight: 800, color: c.ink, fontSize: '17px' }">{{ zl(b.total) }}</span>
         </div>
         <div :style="{ height: '14px', borderRadius: '8px', background: c.surfaceAlt, overflow: 'hidden', display: 'flex', margin: '10px 0' }">
@@ -131,23 +135,23 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
           <div :style="{ flex: 1, background: c.primary }" />
         </div>
         <div :style="{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }">
-          <span :style="{ color: c.inkSoft }"><b :style="{ color: c.ink }">{{ zl(b.nfz) }}</b> pokrywa NFZ</span>
-          <span :style="{ color: c.primary, fontWeight: 800 }">brakuje {{ zl(b.gap) }}</span>
+          <span :style="{ color: c.inkSoft }"><b :style="{ color: c.ink }">{{ zl(b.nfz) }}</b> {{ t('common.nfzCovers') }}</span>
+          <span :style="{ color: c.primary, fontWeight: 800 }">{{ t('common.gapMissing', { amount: zl(b.gap) }) }}</span>
         </div>
       </FrCard>
     </div>
     <div style="padding: 10px 18px 0;">
       <FrBtn variant="ghost" :full="true" :style="{ borderRadius: (r * 0.85) + 'px' }" @click="emit('navigate', 'budget')">
-        <FrIcon name="chart" :size="17" :color="c.ink" /> Zobacz, na co dokładnie zbieramy
+        <FrIcon name="chart" :size="17" :color="c.ink" /> {{ t('home.seeBudget') }}
       </FrBtn>
     </div>
 
     <!-- Latest progress -->
     <div style="padding: 24px 18px 0;">
       <div :style="{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }">
-        <h2 :style="{ margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '21px', color: c.ink, letterSpacing: f.hLetter }">Co u Adasia</h2>
+        <h2 :style="{ margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '21px', color: c.ink, letterSpacing: f.hLetter }">{{ t('home.whatsNew', { name }) }}</h2>
         <button :style="{ border: 'none', background: 'transparent', color: c.primary, fontWeight: 800, fontSize: '13.5px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px', fontFamily: 'inherit' }" @click="emit('navigate', 'progress')">
-          Wszystkie <FrIcon name="chevR" :size="15" :color="c.primary" />
+          {{ t('common.all') }} <FrIcon name="chevR" :size="15" :color="c.primary" />
         </button>
       </div>
       <div :style="{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }">
@@ -170,19 +174,19 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
             <FrIcon name="percent" :size="26" :color="c.primary" />
           </div>
           <div style="flex: 1;">
-            <div :style="{ fontWeight: 800, color: c.ink, fontSize: '15.5px' }">Rozlicz 1,5% podatku</div>
-            <div :style="{ color: c.inkSoft, fontSize: '13px', marginTop: '2px' }">Nic nie kosztuje. Termin: 30 kwietnia.</div>
+            <div :style="{ fontWeight: 800, color: c.ink, fontSize: '15.5px' }">{{ t('home.taxPromoTitle') }}</div>
+            <div :style="{ color: c.inkSoft, fontSize: '13px', marginTop: '2px' }">{{ t('home.taxPromoSub') }}</div>
           </div>
         </div>
         <button :style="{ width: '100%', border: 'none', borderTop: `1px solid ${c.line}`, background: c.surfaceAlt, padding: '12px', fontWeight: 800, color: c.primary, fontFamily: 'inherit', fontSize: '14px', cursor: 'pointer' }" @click="emit('navigate', 'tax')">
-          Jak przekazać 1,5% →
+          {{ t('home.taxPromoCta') }}
         </button>
       </FrCard>
     </div>
 
     <!-- Partners -->
     <div style="padding: 24px 18px 0;">
-      <div :style="{ fontSize: '12.5px', fontWeight: 800, color: c.inkSoft, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }">Pomagają nam</div>
+      <div :style="{ fontSize: '12.5px', fontWeight: 800, color: c.inkSoft, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }">{{ t('home.partners') }}</div>
       <div :style="{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }">
         <div
           v-for="p in d.partners"
@@ -190,40 +194,40 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
           :style="{ padding: '10px 14px', background: c.surface, border: `1px solid ${c.line}`, borderRadius: (r * 0.8) + 'px', fontWeight: 700, fontSize: '13px', color: c.ink, display: 'flex', alignItems: 'center', gap: '8px' }"
         >
           {{ typeof p === 'string' ? p : p.name }}
-          <AdminDelete v-if="p.id" label="partnera" @click="deletePartner(p.id)" />
+          <AdminDelete v-if="p.id" :label="t('admin.del.partner')" @click="deletePartner(p.id)" />
         </div>
-        <AdminAdd label="Dodaj partnera" @click="showAddPartner = true" />
+        <AdminAdd :label="t('home.addPartner')" @click="showAddPartner = true" />
       </div>
     </div>
 
     <!-- FAQ -->
     <div style="padding: 24px 18px 0;">
-      <div :style="{ marginBottom: '12px', fontSize: '12.5px', fontWeight: 800, color: c.inkSoft, textTransform: 'uppercase', letterSpacing: '0.05em' }">Częste pytania</div>
+      <div :style="{ marginBottom: '12px', fontSize: '12.5px', fontWeight: 800, color: c.inkSoft, textTransform: 'uppercase', letterSpacing: '0.05em' }">{{ t('home.faqTitle') }}</div>
       <FrAccordion
         :items="faqItems"
         @edit-question="updateFaq({ id: $event.id, question: $event.value })"
         @edit-answer="updateFaq({ id: $event.id, answer: $event.value })"
         @remove="deleteFaq($event)"
       />
-      <AdminAdd label="Dodaj pytanie" @click="showAddFaq = true" />
+      <AdminAdd :label="t('home.addQuestion')" @click="showAddFaq = true" />
     </div>
 
     <!-- Add FAQ modal -->
-    <AdminFormModal title="Dodaj pytanie FAQ" :open="showAddFaq" :saving="addingFaq" @close="showAddFaq = false" @save="submitFaq">
+    <AdminFormModal :title="t('home.addFaqTitle')" :open="showAddFaq" :saving="addingFaq" @close="showAddFaq = false" @save="submitFaq">
       <label class="block mb-3">
-        <span class="text-xs font-bold text-gray-500 mb-1 block">Pytanie</span>
+        <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('home.faqQuestionLabel') }}</span>
         <input v-model="newFaqQ" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
       </label>
       <label class="block">
-        <span class="text-xs font-bold text-gray-500 mb-1 block">Odpowiedź</span>
+        <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('home.faqAnswerLabel') }}</span>
         <textarea v-model="newFaqA" rows="4" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400 resize-none" />
       </label>
     </AdminFormModal>
 
     <!-- Add partner modal -->
-    <AdminFormModal title="Dodaj partnera" :open="showAddPartner" :saving="addingPartner" @close="showAddPartner = false" @save="submitPartner">
+    <AdminFormModal :title="t('home.addPartner')" :open="showAddPartner" :saving="addingPartner" @close="showAddPartner = false" @save="submitPartner">
       <label class="block">
-        <span class="text-xs font-bold text-gray-500 mb-1 block">Nazwa</span>
+        <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('home.partnerNameLabel') }}</span>
         <input v-model="newPartnerName" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
       </label>
     </AdminFormModal>

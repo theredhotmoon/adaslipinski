@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { theme, data } from '../data'
 const { c, r } = theme
+const { t } = useI18n()
 
-const props = defineProps<{
+defineProps<{
   modelValue: number
   custom: string
   freq: 'once' | 'monthly'
@@ -36,7 +38,7 @@ const emit = defineEmits<{
       <input
         :value="custom"
         inputmode="numeric"
-        placeholder="Inna kwota"
+        :placeholder="t('donate.custom')"
         :style="{
           width: '100%', boxSizing: 'border-box', padding: '13px 44px 13px 14px', fontFamily: 'inherit',
           fontSize: '15.5px', fontWeight: 700, color: c.ink, background: c.surface,

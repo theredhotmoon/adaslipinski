@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { X } from 'lucide-vue-next'
 import { theme } from '@/features/fundraising/data'
 const { c } = theme
+const { t } = useI18n()
 
 defineProps<{ title: string; open: boolean; saving?: boolean }>()
 const emit = defineEmits<{ close: []; save: [] }>()
@@ -31,12 +33,12 @@ const emit = defineEmits<{ close: []; save: [] }>()
             :style="{ background: c.primary, color: c.primaryInk, fontFamily: 'inherit' }"
             :disabled="saving"
             @click="emit('save')"
-          >{{ saving ? 'Zapisuję…' : 'Zapisz' }}</button>
+          >{{ saving ? t('common.saving') : t('common.save') }}</button>
           <button
             class="px-5 py-3 rounded-xl font-bold text-sm border border-gray-200 hover:bg-gray-50"
             :style="{ fontFamily: 'inherit', color: c.inkSoft }"
             @click="emit('close')"
-          >Anuluj</button>
+          >{{ t('common.cancel') }}</button>
         </div>
       </div>
     </div>

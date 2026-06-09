@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrIcon from './FrIcon.vue'
 import { theme } from '../data'
 const { c, r } = theme
+const { t } = useI18n()
 
-const props = defineProps<{ modelValue: 'once' | 'monthly'; size?: 'md' | 'lg' }>()
+defineProps<{ modelValue: 'once' | 'monthly'; size?: 'md' | 'lg' }>()
 const emit = defineEmits<{ 'update:modelValue': ['once' | 'monthly'] }>()
 
-const opts = [
-  { k: 'once' as const, l: 'Jednorazowo' },
-  { k: 'monthly' as const, l: 'Co miesiąc' },
-]
+const opts = computed(() => [
+  { k: 'once' as const, l: t('donate.once') },
+  { k: 'monthly' as const, l: t('donate.monthly') },
+])
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrCard from '../components/FrCard.vue'
 import FrIcon from '../components/FrIcon.vue'
 import InlineText from '@/features/admin/components/InlineText.vue'
@@ -10,6 +11,7 @@ import { theme, data as staticData, zl } from '../data'
 import type { SiteContent } from '../types'
 
 const { c, r, f } = theme
+const { t } = useI18n()
 const emit = defineEmits<{ donate: [{ amount: number; freq: 'once' | 'monthly'; item?: string }] }>()
 
 const siteData = inject<Ref<SiteContent>>('siteData')
@@ -22,6 +24,11 @@ const budget = computed<SiteContent['budget']>(
   }
 )
 const nfzPct = computed(() => Math.round(((budget.value.nfz ?? 1200) / (budget.value.total ?? 4960)) * 100))
+const hundredItems = computed(() => [
+  [t('budget.h1'), 'horse'],
+  [t('budget.h2'), 'body'],
+  [t('budget.h3'), 'hand'],
+] as const)
 
 const { mutate: updateBudgetItem } = useUpdateBudgetItem()
 </script>
@@ -29,16 +36,16 @@ const { mutate: updateBudgetItem } = useUpdateBudgetItem()
 <template>
   <div style="padding-bottom: 28px;">
     <div style="padding: 16px 18px 6px;">
-      <div :style="{ fontSize: '12.5px', fontWeight: 800, color: c.primary, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }">Budżet</div>
-      <h1 :style="{ margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '30px', lineHeight: 1.08, letterSpacing: f.hLetter, color: c.ink }">Na co dokładnie zbieramy</h1>
-      <p :style="{ margin: '10px 0 0', color: c.inkSoft, fontSize: '15px', lineHeight: 1.5 }">Konkrety, nie ogólniki. Każda pozycja to realna terapia, którą możesz sfinansować.</p>
+      <div :style="{ fontSize: '12.5px', fontWeight: 800, color: c.primary, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }">{{ t('budget.kicker') }}</div>
+      <h1 :style="{ margin: 0, fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '30px', lineHeight: 1.08, letterSpacing: f.hLetter, color: c.ink }">{{ t('budget.title') }}</h1>
+      <p :style="{ margin: '10px 0 0', color: c.inkSoft, fontSize: '15px', lineHeight: 1.5 }">{{ t('budget.subtitle') }}</p>
     </div>
 
     <!-- Budget bar -->
     <div style="padding: 16px 18px 0;">
       <FrCard>
         <div :style="{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '4px' }">
-          <span :style="{ fontWeight: 800, color: c.ink, fontSize: '15px' }">Koszt rehabilitacji / miesiąc</span>
+          <span :style="{ fontWeight: 800, color: c.ink, fontSize: '15px' }">{{ t('common.monthlyCost') }}</span>
           <span :style="{ fontWeight: 800, color: c.ink, fontSize: '17px' }">{{ zl(budget.total) }}</span>
         </div>
         <div :style="{ height: '14px', borderRadius: '8px', background: c.surfaceAlt, overflow: 'hidden', display: 'flex', margin: '10px 0' }">
@@ -46,8 +53,8 @@ const { mutate: updateBudgetItem } = useUpdateBudgetItem()
           <div :style="{ flex: 1, background: c.primary }" />
         </div>
         <div :style="{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }">
-          <span :style="{ color: c.inkSoft }"><b :style="{ color: c.ink }">{{ zl(budget.nfz) }}</b> pokrywa NFZ</span>
-          <span :style="{ color: c.primary, fontWeight: 800 }">brakuje {{ zl(budget.gap) }}</span>
+          <span :style="{ color: c.inkSoft }"><b :style="{ color: c.ink }">{{ zl(budget.nfz) }}</b> {{ t('common.nfzCovers') }}</span>
+          <span :style="{ color: c.primary, fontWeight: 800 }">{{ t('common.gapMissing', { amount: zl(budget.gap) }) }}</span>
         </div>
       </FrCard>
     </div>
@@ -74,7 +81,7 @@ const { mutate: updateBudgetItem } = useUpdateBudgetItem()
                 :style="{ fontWeight: 800, color: c.ink, fontSize: '15px' }"
               >{{ zl(it.cost) }}</InlineNumber>
             </div>
-            <div :style="{ color: c.inkSoft, fontSize: '12px' }">{{ it.freq }} · /miesiąc</div>
+            <div :style="{ color: c.inkSoft, fontSize: '12px' }">{{ it.freq }} · {{ t('budget.perMonth') }}</div>
             <InlineText
               tag="div"
               :value="it.note"
@@ -83,7 +90,7 @@ const { mutate: updateBudgetItem } = useUpdateBudgetItem()
               :style="{ color: c.inkSoft, fontSize: '13px', marginTop: '6px', lineHeight: 1.45 }"
             />
             <button :style="{ marginTop: '10px', border: `1.5px solid ${c.primary}`, background: 'transparent', color: c.primary, fontWeight: 800, fontSize: '13px', padding: '8px 14px', borderRadius: (r * 0.75) + 'px', cursor: 'pointer', fontFamily: 'inherit' }" @click="emit('donate', { amount: Math.min(200, it.cost), freq: 'monthly', item: it.name })">
-              Sfinansuj tę pozycję
+              {{ t('budget.fund') }}
             </button>
           </div>
         </div>
@@ -93,11 +100,11 @@ const { mutate: updateBudgetItem } = useUpdateBudgetItem()
     <!-- 100 zł card -->
     <div style="padding: 20px 18px 0;">
       <FrCard :style="{ background: c.heroBg, border: 'none' }">
-        <div :style="{ fontWeight: 800, color: c.ink, fontSize: '16px', marginBottom: '10px' }">Twoje 100 zł wystarczy na:</div>
-        <div v-for="([t, ic], i) in [['2× hipoterapię', 'horse'], ['1× sesję fizjoterapii', 'body'], ['tydzień terapii ręki', 'hand']]" :key="i" :style="{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 0', color: c.ink, fontSize: '14.5px' }">
+        <div :style="{ fontWeight: 800, color: c.ink, fontSize: '16px', marginBottom: '10px' }">{{ t('budget.hundredTitle') }}</div>
+        <div v-for="([label, ic], i) in hundredItems" :key="i" :style="{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 0', color: c.ink, fontSize: '14.5px' }">
           <FrIcon :name="ic" :size="20" :color="c.primary" :stroke-width="1.8" />
-          <span style="font-weight: 600;">{{ t }}</span>
-          <span v-if="i < 2" :style="{ marginLeft: 'auto', fontSize: '12px', color: c.inkSoft, fontWeight: 700 }">LUB</span>
+          <span style="font-weight: 600;">{{ label }}</span>
+          <span v-if="i < 2" :style="{ marginLeft: 'auto', fontSize: '12px', color: c.inkSoft, fontWeight: 700 }">{{ t('common.or') }}</span>
         </div>
       </FrCard>
     </div>

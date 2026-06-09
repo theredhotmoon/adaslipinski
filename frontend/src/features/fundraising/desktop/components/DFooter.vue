@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FrIcon from '../../components/FrIcon.vue'
 import InlineText from '@/features/admin/components/InlineText.vue'
 import { useUpdateFoundation } from '@/features/admin/useCmsApi'
+import { siteConfig } from '@/config/site'
 import { dt } from '../desktopTheme'
 import { data as staticData } from '../../data'
 import type { SiteContent } from '../../types'
 const { c } = dt
+const { t } = useI18n()
 
 const siteData = inject<Ref<SiteContent>>('siteData')
 const d = computed(() => siteData?.value?.foundation ?? staticData.foundation as any)
+const tagline = computed(() => t('d.footer.tagline', { foundation: d.value.name, purpose: d.value.cel }))
+const copyright = computed(() => t('d.footer.copyright', { site: siteConfig.siteName, email: d.value.email }))
 const { mutate: patchFoundation } = useUpdateFoundation()
 </script>
 <template>
@@ -22,14 +27,14 @@ const { mutate: patchFoundation } = useUpdateFoundation()
             <span :style="{ width: '34px', height: '34px', borderRadius: '10px', background: c.primary, display: 'grid', placeItems: 'center' }">
               <FrIcon name="heart" :size="18" :color="c.primaryInk" />
             </span>
-            <span :style="{ fontWeight: 900, fontSize: '19px', color: '#fff' }">Adaś Lipiński</span>
+            <span :style="{ fontWeight: 900, fontSize: '19px', color: '#fff' }">{{ siteConfig.siteName }}</span>
           </div>
           <p :style="{ margin: 0, fontSize: '14.5px', lineHeight: 1.6, maxWidth: '360px', color: 'rgba(255,255,255,0.7)' }">
-            Zbiórka prowadzona przez {{ d.name }}. Wpłaty trafiają na subkonto z dopiskiem „{{ d.cel }}" — nie na konto prywatne.
+            {{ tagline }}
           </p>
         </div>
         <div>
-          <div :style="{ fontWeight: 800, color: '#fff', fontSize: '14px', marginBottom: '12px' }">Fundacja</div>
+          <div :style="{ fontWeight: 800, color: '#fff', fontSize: '14px', marginBottom: '12px' }">{{ t('nav.foundation') }}</div>
           <div :style="{ fontSize: '14px', marginBottom: '7px' }">
             <span :style="{ color: 'rgba(255,255,255,0.5)' }">KRS: </span>
             <InlineText :value="d.krs" @save="patchFoundation({ krs: $event })" :style="{ fontFamily: 'ui-monospace, Menlo, monospace', color: 'rgba(255,255,255,0.86)' }" />
@@ -44,12 +49,12 @@ const { mutate: patchFoundation } = useUpdateFoundation()
           </div>
         </div>
         <div>
-          <div :style="{ fontWeight: 800, color: '#fff', fontSize: '14px', marginBottom: '12px' }">Linki</div>
-          <a v-for="l in [...d.links.map((x: { label: string }) => x.label), 'Polityka prywatności']" :key="l" href="#" :style="{ display: 'block', fontSize: '14px', marginBottom: '8px', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }">{{ l }}</a>
+          <div :style="{ fontWeight: 800, color: '#fff', fontSize: '14px', marginBottom: '12px' }">{{ t('d.footer.links') }}</div>
+          <a v-for="l in [...d.links.map((x: { label: string }) => x.label), t('d.footer.privacy')]" :key="l" href="#" :style="{ display: 'block', fontSize: '14px', marginBottom: '8px', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }">{{ l }}</a>
         </div>
       </div>
       <div :style="{ marginTop: '36px', paddingTop: '22px', borderTop: '1px solid rgba(255,255,255,0.12)', fontSize: '13px', color: 'rgba(255,255,255,0.5)' }">
-        © 2026 adaslipinski.pl · Zbiórka zgodna z prawem · {{ d.email }}
+        {{ copyright }}
       </div>
     </div>
   </footer>
