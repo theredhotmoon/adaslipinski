@@ -107,7 +107,7 @@ function scrollTo(id: string) {
             <div class="grid grid-cols-2 gap-[22px] items-center">
               <DPh :label="t('about.photoAlt', { name })" ratio="4/3" />
               <div :style="{ color: c.ink, fontSize: '16px', lineHeight: 1.65 }">
-                <p style="margin: 0 0 12px;">{{ t('d.classic.story1', { age: child.age }) }}</p>
+                <p style="margin: 0 0 12px;">{{ t('d.classic.story1', { name, age: child.age }) }}</p>
                 <p style="margin: 0;">{{ t('d.classic.story2') }}</p>
               </div>
             </div>
