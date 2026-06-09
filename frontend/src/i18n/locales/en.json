@@ -222,6 +222,8 @@
     "thisItem": "this item",
     "delete": "Delete",
     "add": "Add",
+    "uploadImage": "Change photo",
+    "uploading": "Uploading…",
     "del": {
       "partner": "this partner",
       "milestone": "this milestone",

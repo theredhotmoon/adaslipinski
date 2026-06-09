@@ -8,6 +8,7 @@ import InlineText from '@/features/admin/components/InlineText.vue'
 import AdminAdd from '@/features/admin/components/AdminAdd.vue'
 import AdminDelete from '@/features/admin/components/AdminDelete.vue'
 import AdminFormModal from '@/features/admin/components/AdminFormModal.vue'
+import AdminImageUpload from '@/features/admin/components/AdminImageUpload.vue'
 import { useUpdateProgress, useCreateProgress, useDeleteProgress } from '@/features/admin/useCmsApi'
 import { dt } from '../desktopTheme'
 import { data as staticData, zl } from '../../data'
@@ -44,7 +45,12 @@ function submitPost() {
   <div>
     <div :style="{ display: 'grid', gridTemplateColumns: `repeat(${cols ?? 3}, 1fr)`, gap: '18px' }">
       <article v-for="p in items" :key="p.id" :style="{ background: c.surface, border: `1px solid ${c.line}`, borderRadius: '18px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }">
-        <DPh :label="p.img" ratio="16/10" :radius="0" />
+        <div style="position: relative;">
+          <DPh :label="p.img" :src="p.imgUrl" ratio="16/10" :radius="0" />
+          <div style="position: absolute; bottom: 10px; right: 10px;">
+            <AdminImageUpload :alt="p.title" @uploaded="updatePost({ id: p.id, image_id: $event.id })" />
+          </div>
+        </div>
         <div class="p-[18px]">
           <div class="flex items-center gap-2.5">
             <DPill tone="soft" style="font-size: 11.5px; padding: 4px 10px;">

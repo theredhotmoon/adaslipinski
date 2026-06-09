@@ -7,6 +7,12 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Image upload for news/progress posts: admins can upload a photo to a post
+  (file → `POST /admin/media` → attached via `image_id`), and posts render the
+  real image (mobile + desktop) instead of a placeholder. New `AdminImageUpload`
+  component + `useUploadMedia`; `DPh` gained image rendering; `storage:link`
+  wired into the Docker entrypoint so uploads are web-served. Feature tests
+  cover upload + mime rejection + attach-to-site + auth.
 - Tolgee translation sync (optional): `@tolgee/cli` + `frontend/.tolgeerc.json`
   (Tolgee Cloud, JSON_ICU), `npm run i18n:push/pull/compare` scripts, the
   official Tolgee MCP server in `.mcp.json`, and a README "Translations" guide.
