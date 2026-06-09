@@ -91,6 +91,34 @@ listed in `ADMIN_EMAILS`. Your first login sets that account's password.
 | `CORS_ALLOWED_ORIGINS`  | backend `.env`   | Override CORS origins (comma-separated; `*` for all) |
 | `APP_KEY`               | backend `.env`   | Laravel encryption key (`php artisan key:generate`)  |
 | `VITE_API_URL`          | frontend `.env`  | Base URL of the API (e.g. `https://api.example.com/api`) |
+| `TOLGEE_API_KEY`        | shell env        | Tolgee Project API Key for translation sync (optional)   |
+
+## 🌍 Translations (Tolgee)
+
+UI strings live in `frontend/src/i18n/locales/{pl,en}.json`. You can edit those
+files directly, or manage translations in [Tolgee](https://tolgee.io) (free tier
+= 1,000 strings) and sync via the CLI. One-time setup:
+
+1. Create a free project at [app.tolgee.io](https://app.tolgee.io) and generate a
+   **Project API Key** (PAK).
+2. Put your project ID in `frontend/.tolgeerc.json` (`"projectId"`), and export
+   the key: `export TOLGEE_API_KEY=tgpak_…` (PowerShell: `$env:TOLGEE_API_KEY=…`).
+3. Seed Tolgee with the existing keys: `cd frontend && npm run i18n:push:seed`.
+
+Day-to-day (from `frontend/`):
+
+```bash
+npm run i18n:pull      # Tolgee → local JSON (after translating in the UI)
+npm run i18n:push      # local JSON → Tolgee (adds new keys, keeps existing)
+npm run i18n:compare   # diff local code/keys against the Tolgee project
+```
+
+**MCP:** `.mcp.json` registers the official Tolgee MCP server (HTTP), so Claude
+can search/update translations directly — it reads `TOLGEE_API_KEY` from your env.
+
+> Note: the locale files use Vue I18n `{name}`-style placeholders; `.tolgeerc.json`
+> is set to `JSON_ICU`. Verify the first round-trip preserves placeholders/markup
+> and adjust `format` if your project needs a different mapping.
 
 ## 🔒 Security notes
 
