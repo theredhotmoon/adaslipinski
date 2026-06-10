@@ -11,9 +11,11 @@ import InlineText from '@/features/admin/components/InlineText.vue'
 import AdminAdd from '@/features/admin/components/AdminAdd.vue'
 import AdminDelete from '@/features/admin/components/AdminDelete.vue'
 import AdminFormModal from '@/features/admin/components/AdminFormModal.vue'
+import AdminImageUpload from '@/features/admin/components/AdminImageUpload.vue'
 import {
   useUpdateBeneficiary,
   useUpdateMilestone, useCreateMilestone, useDeleteMilestone,
+  useUpdateTestimonial, useCreateGalleryImage, useDeleteGalleryImage,
 } from '@/features/admin/useCmsApi'
 import { siteConfig } from '@/config/site'
 import { theme, data as staticData } from '../data'
@@ -30,11 +32,16 @@ const milestones = computed<SiteContent['milestones']>(
   () => siteData?.value?.milestones ?? staticData.milestones.map((m, i) => ({ id: i + 1, year: m.year, text: m.text }))
 )
 const galleryLabels = computed(() => [t('about.g1'), t('about.g2'), t('about.g3'), t('about.g4')])
+const testimonial = computed(() => siteData?.value?.testimonials?.[0])
+const gallery = computed(() => siteData?.value?.gallery ?? [])
 
 const { mutate: patchBeneficiary } = useUpdateBeneficiary()
 const { mutate: updateMilestone } = useUpdateMilestone()
 const { mutate: createMilestone, isPending: creating } = useCreateMilestone()
 const { mutate: deleteMilestone } = useDeleteMilestone()
+const { mutate: updateTestimonial } = useUpdateTestimonial()
+const { mutate: createGalleryImage } = useCreateGalleryImage()
+const { mutate: deleteGalleryImage } = useDeleteGalleryImage()
 
 const showAdd = ref(false)
 const newMs = ref({ year: '', label: '' })
@@ -86,14 +93,15 @@ function submitMilestone() {
     <div style="padding: 18px 18px 0;">
       <FrCard :style="{ background: c.primarySoft, border: 'none' }">
         <div :style="{ fontFamily: f.heading, fontWeight: f.hWeight, fontSize: '18px', color: c.ink, lineHeight: 1.4, letterSpacing: f.hLetter }">
-          {{ t('about.quote', { name }) }}
+          {{ testimonial?.quote ?? t('about.quote', { name }) }}
         </div>
         <div :style="{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '10px' }">
-          <FrPh label="foto" :h="42" :radius="999" style="width: 42px; flex-shrink: 0;" />
-          <div style="font-size: 12.5px;">
-            <div :style="{ fontWeight: 800, color: c.ink }">{{ t('about.quoteAuthor') }}</div>
-            <div :style="{ color: c.inkSoft }">{{ t('about.quoteRole') }}</div>
+          <FrPh label="foto" :src="testimonial?.photoUrl" :h="42" :radius="999" style="width: 42px; flex-shrink: 0;" />
+          <div style="font-size: 12.5px; flex: 1;">
+            <div :style="{ fontWeight: 800, color: c.ink }">{{ testimonial?.authorName ?? t('about.quoteAuthor') }}</div>
+            <div :style="{ color: c.inkSoft }">{{ testimonial?.authorRole ?? t('about.quoteRole') }}</div>
           </div>
+          <AdminImageUpload v-if="testimonial?.id" label="" :alt="testimonial?.authorName" @uploaded="updateTestimonial({ id: testimonial!.id, photo_id: $event.id })" />
         </div>
       </FrCard>
     </div>
@@ -123,8 +131,17 @@ function submitMilestone() {
     <div style="padding: 8px 18px 0;">
       <FrSectionLabel>{{ t('about.gallery') }}</FrSectionLabel>
       <div :style="{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }">
-        <FrPh v-for="(l, i) in galleryLabels" :key="i" :label="l" :h="110" />
+        <div v-for="g in gallery" :key="g.id" style="position: relative;">
+          <FrPh label="" :src="g.url" :h="110" />
+          <div style="position: absolute; top: 6px; right: 6px;">
+            <AdminDelete :label="t('about.galleryPhotoDel')" @click="deleteGalleryImage(g.id)" />
+          </div>
+        </div>
+        <template v-if="gallery.length === 0">
+          <FrPh v-for="(l, i) in galleryLabels" :key="'ph' + i" :label="l" :h="110" />
+        </template>
       </div>
+      <AdminImageUpload :label="t('about.addGalleryPhoto')" @uploaded="createGalleryImage($event.id)" />
     </div>
 
     <div style="padding: 22px 18px 0;">

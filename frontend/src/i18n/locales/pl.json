@@ -79,7 +79,9 @@
     "addMilestone": "Dodaj kamień milowy",
     "donateMonthly": "Pomóż Adasiowi co miesiąc",
     "yearLabel": "Rok",
-    "descLabel": "Opis"
+    "descLabel": "Opis",
+    "addGalleryPhoto": "Dodaj zdjęcie",
+    "galleryPhotoDel": "zdjęcie"
   },
   "budget": {
     "kicker": "Budżet",

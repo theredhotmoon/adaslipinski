@@ -79,7 +79,9 @@
     "addMilestone": "Add milestone",
     "donateMonthly": "Help {name} every month",
     "yearLabel": "Year",
-    "descLabel": "Description"
+    "descLabel": "Description",
+    "addGalleryPhoto": "Add photo",
+    "galleryPhotoDel": "this photo"
   },
   "budget": {
     "kicker": "Budget",

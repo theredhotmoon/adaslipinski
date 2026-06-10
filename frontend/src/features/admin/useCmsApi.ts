@@ -107,3 +107,17 @@ export const useUpdatePartner = () =>
 export const useDeletePartner = () =>
   useInvalidating((id: number) =>
     api.delete(`/admin/partners/${id}`))
+
+// ── Testimonials ──────────────────────────────────────────────────────────────
+export const useUpdateTestimonial = () =>
+  useInvalidating(({ id, ...data }: { id: number } & Record<string, unknown>) =>
+    api.put(`/admin/testimonials/${id}`, data))
+
+// ── Gallery ───────────────────────────────────────────────────────────────────
+export const useCreateGalleryImage = () =>
+  useInvalidating((mediaId: number) =>
+    api.post('/admin/gallery', { media_id: mediaId }))
+
+export const useDeleteGalleryImage = () =>
+  useInvalidating((id: number) =>
+    api.delete(`/admin/gallery/${id}`))

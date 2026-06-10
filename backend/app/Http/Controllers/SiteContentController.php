@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\{Beneficiary, BudgetItem, DonationAmount, Expense, FaqItem, Foundation, Milestone, Partner, ProgressPost, Testimonial, YearSummary};
+use App\Models\{Beneficiary, BudgetItem, DonationAmount, Expense, FaqItem, Foundation, GalleryImage, Milestone, Partner, ProgressPost, Testimonial, YearSummary};
 use Illuminate\Http\JsonResponse;
 
 class SiteContentController extends Controller
@@ -121,10 +121,16 @@ class SiteContentController extends Controller
             'amounts' => DonationAmount::active()->ordered()->pluck('amount_pln'),
 
             'testimonials' => Testimonial::active()->with('photo')->get()->map(fn ($t) => [
+                'id'         => $t->id,
                 'quote'      => $t->quote_text,
                 'authorName' => $t->author_name,
                 'authorRole' => $t->author_role,
                 'photoUrl'   => $t->photo?->url,
+            ]),
+
+            'gallery' => GalleryImage::ordered()->with('image')->get()->map(fn ($g) => [
+                'id'  => $g->id,
+                'url' => $g->image?->url,
             ]),
         ]);
     }

@@ -7,6 +7,12 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Image upload for the **About gallery** and **testimonial photos** — completing
+  image upload across every slot. New `gallery_images` table + `GalleryImage`
+  model + admin CRUD (`/admin/gallery`); the About "everyday life" grid renders
+  uploaded photos with add/delete. The About quote is now driven by the CMS
+  testimonial (falls back to i18n) with its photo uploadable. `GET /cms/site`
+  returns a `gallery` array and `testimonials[].id`.
 - Image upload for the **hero image** and **partner logos** (in addition to
   news/progress): admins upload via the same `AdminImageUpload` control, and the
   images render on mobile + desktop. Hero added a `hero_image_id` column on

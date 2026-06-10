@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\Beneficiary;
 use App\Models\Partner;
 use App\Models\ProgressPost;
+use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -99,5 +100,34 @@ class MediaUploadTest extends TestCase
 
         $site = $this->getJson('/api/cms/site?lang=pl')->assertOk()->json();
         $this->assertNotEmpty($site['partners'][0]['logoUrl']);
+    }
+
+    public function test_uploaded_image_can_be_added_to_the_gallery(): void
+    {
+        $this->actAsAdmin();
+
+        $mediaId = $this->post('/api/admin/media', [
+            'file' => UploadedFile::fake()->create('g.jpg', 100, 'image/jpeg'),
+        ])->json('id');
+
+        $this->postJson('/api/admin/gallery', ['media_id' => $mediaId])->assertCreated();
+
+        $site = $this->getJson('/api/cms/site?lang=pl')->assertOk()->json();
+        $this->assertNotEmpty($site['gallery'][0]['url']);
+    }
+
+    public function test_uploaded_image_can_become_a_testimonial_photo(): void
+    {
+        $this->actAsAdmin();
+        $testimonial = Testimonial::factory()->create();
+
+        $mediaId = $this->post('/api/admin/media', [
+            'file' => UploadedFile::fake()->create('t.jpg', 100, 'image/jpeg'),
+        ])->json('id');
+
+        $this->putJson("/api/admin/testimonials/{$testimonial->id}", ['photo_id' => $mediaId])->assertOk();
+
+        $site = $this->getJson('/api/cms/site?lang=pl')->assertOk()->json();
+        $this->assertNotEmpty($site['testimonials'][0]['photoUrl']);
     }
 }
