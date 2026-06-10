@@ -91,5 +91,6 @@ export interface SiteContent {
   partners: PartnerData[]
   foundation: FoundationData
   amounts: number[]
-  testimonials: { quote: string; authorName: string; authorRole: string; photoUrl?: string }[]
+  testimonials: { id: number; quote: string; authorName: string; authorRole: string; photoUrl?: string }[]
+  gallery: { id: number; url: string }[]
 }

@@ -53,6 +53,11 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/year-summaries/{year}', [Admin\YearSummaryController::class, 'upsert']);
         Route::delete('/year-summaries/{year}', [Admin\YearSummaryController::class, 'destroy']);
 
+        // Gallery (About-page photo grid)
+        Route::get('/gallery', [Admin\GalleryImageController::class, 'index']);
+        Route::post('/gallery', [Admin\GalleryImageController::class, 'store']);
+        Route::delete('/gallery/{galleryImage}', [Admin\GalleryImageController::class, 'destroy']);
+
         // Media
         Route::get('/media', [Admin\MediaController::class, 'index']);
         Route::post('/media', [Admin\MediaController::class, 'store']);

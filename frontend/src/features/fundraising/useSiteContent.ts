@@ -60,6 +60,7 @@ const fallback: SiteContent = {
   },
   amounts:      [...staticData.amounts],
   testimonials: [],
+  gallery:      [],
 }
 
 export function useSiteContent() {
