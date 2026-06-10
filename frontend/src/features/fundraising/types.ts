@@ -59,6 +59,7 @@ export interface MilestoneData {
 export interface PartnerData {
   id: number
   name: string
+  logoUrl?: string
 }
 
 export interface SiteContent {
@@ -74,6 +75,7 @@ export interface SiteContent {
     ctaLabel: string
     ctaBarLabel: string
     recurringDefault: boolean
+    heroImageUrl?: string
   }
   budget: {
     total: number

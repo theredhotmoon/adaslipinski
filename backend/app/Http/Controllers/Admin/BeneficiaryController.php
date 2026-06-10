@@ -24,6 +24,7 @@ class BeneficiaryController extends Controller
             'cta_bar_label'    => 'sometimes|nullable|string|max:100',
             'recurring_default' => 'sometimes|boolean',
             'nfz_monthly_pln'  => 'sometimes|integer|min:0',
+            'hero_image_id'    => 'sometimes|nullable|exists:media,id',
         ]);
         $b = Beneficiary::firstOrNew([]);
         $b->fill($data)->save();

@@ -17,6 +17,7 @@ import DFooter from '../components/DFooter.vue'
 import DPartners from '../components/DPartners.vue'
 import FrIcon from '../../components/FrIcon.vue'
 import InlineText from '@/features/admin/components/InlineText.vue'
+import AdminImageUpload from '@/features/admin/components/AdminImageUpload.vue'
 import { useUpdateBeneficiary } from '@/features/admin/useCmsApi'
 import { inject, computed } from 'vue'
 import type { Ref } from 'vue'
@@ -81,7 +82,12 @@ function scrollTo(id: string) {
             </div>
           </div>
         </div>
-        <DPh :label="t('hero.photoAlt', { name })" ratio="4/5" :radius="24" style="box-shadow: 0 30px 60px -30px rgba(60,50,20,0.5);" />
+        <div style="position: relative;">
+          <DPh :label="t('hero.photoAlt', { name })" :src="child.heroImageUrl" ratio="4/5" :radius="24" style="box-shadow: 0 30px 60px -30px rgba(60,50,20,0.5);" />
+          <div style="position: absolute; bottom: 12px; right: 12px;">
+            <AdminImageUpload :alt="t('hero.photoAlt', { name })" @uploaded="patchBeneficiary({ hero_image_id: $event.id })" />
+          </div>
+        </div>
       </div>
     </section>
 

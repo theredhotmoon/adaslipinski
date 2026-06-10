@@ -15,10 +15,11 @@ import InlineText from '@/features/admin/components/InlineText.vue'
 import AdminAdd from '@/features/admin/components/AdminAdd.vue'
 import AdminDelete from '@/features/admin/components/AdminDelete.vue'
 import AdminFormModal from '@/features/admin/components/AdminFormModal.vue'
+import AdminImageUpload from '@/features/admin/components/AdminImageUpload.vue'
 import {
   useUpdateBeneficiary,
   useUpdateFaq, useCreateFaq, useDeleteFaq,
-  useCreatePartner, useDeletePartner,
+  useCreatePartner, useUpdatePartner, useDeletePartner,
 } from '@/features/admin/useCmsApi'
 import { siteConfig } from '@/config/site'
 import { theme, data as staticData, zl } from '../data'
@@ -48,6 +49,7 @@ const { mutate: createFaq, isPending: addingFaq } = useCreateFaq()
 const { mutate: deleteFaq } = useDeleteFaq()
 const { mutate: updateFaq } = useUpdateFaq()
 const { mutate: createPartner, isPending: addingPartner } = useCreatePartner()
+const { mutate: updatePartner } = useUpdatePartner()
 const { mutate: deletePartner } = useDeletePartner()
 
 // FAQ add modal
@@ -84,7 +86,12 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
           <InlineText :value="d.child?.heroKicker ?? theme.copy.heroKicker" @save="patchBeneficiary({ hero_kicker: $event })" />
         </FrPill>
       </div>
-      <FrPh :label="t('hero.photoAlt', { name })" :h="210" />
+      <div style="position: relative;">
+        <FrPh :label="t('hero.photoAlt', { name })" :src="d.child?.heroImageUrl" :h="210" />
+        <div style="position: absolute; bottom: 8px; right: 8px;">
+          <AdminImageUpload :alt="t('hero.photoAlt', { name })" @uploaded="patchBeneficiary({ hero_image_id: $event.id })" />
+        </div>
+      </div>
       <InlineText
         tag="h1"
         :value="d.child?.heroTitle ?? theme.copy.heroTitle"
@@ -193,7 +200,9 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
           :key="p.id ?? p.name"
           :style="{ padding: '10px 14px', background: c.surface, border: `1px solid ${c.line}`, borderRadius: (r * 0.8) + 'px', fontWeight: 700, fontSize: '13px', color: c.ink, display: 'flex', alignItems: 'center', gap: '8px' }"
         >
+          <img v-if="p.logoUrl" :src="p.logoUrl" :alt="p.name" style="height: 20px; width: auto; object-fit: contain;" />
           {{ typeof p === 'string' ? p : p.name }}
+          <AdminImageUpload v-if="p.id" label="" :alt="p.name" @uploaded="updatePartner({ id: p.id, logo_id: $event.id })" />
           <AdminDelete v-if="p.id" :label="t('admin.del.partner')" @click="deletePartner(p.id)" />
         </div>
         <AdminAdd :label="t('home.addPartner')" @click="showAddPartner = true" />
