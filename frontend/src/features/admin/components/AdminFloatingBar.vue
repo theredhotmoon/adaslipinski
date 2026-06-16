@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Lock, LogOut, Pencil, Eye, EyeOff } from 'lucide-vue-next'
+import { Lock, LogOut, Pencil, Eye, EyeOff, Settings } from 'lucide-vue-next'
 import { useAuthStore } from '@/features/auth/store'
+import AdminSiteSettings from './AdminSiteSettings.vue'
 
 const auth = useAuthStore()
 const { t } = useI18n()
+
+// Site Settings panel
+const showSettings = ref(false)
 
 // Login form state
 const showLogin = ref(false)
@@ -51,8 +55,15 @@ function logout() {
       <Pencil :size="13" />
       {{ t('admin.mode') }}
       <button
-        @click="logout"
+        @click="showSettings = true"
         class="ml-1 opacity-70 hover:opacity-100 transition-opacity"
+        :title="t('admin.settings.title')"
+      >
+        <Settings :size="13" />
+      </button>
+      <button
+        @click="logout"
+        class="opacity-70 hover:opacity-100 transition-opacity"
         :title="t('admin.logout')"
       >
         <LogOut :size="13" />
@@ -60,6 +71,9 @@ function logout() {
     </div>
     <div class="text-[10px] text-white/60 pr-1">{{ auth.user?.email }}</div>
   </div>
+
+  <!-- Site Settings panel -->
+  <AdminSiteSettings v-if="auth.isAuthenticated" :open="showSettings" @close="showSettings = false" />
 
   <!-- Login trigger (not logged in) -->
   <div v-else class="fixed bottom-[130px] right-3 z-[2000]">

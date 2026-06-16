@@ -88,4 +88,5 @@ export const fallback: SiteContent = {
   amounts: [20, 50, 100, 200],
   testimonials: [],
   gallery: [],
+  settings: { layout: 'classic', hiddenSections: [] },
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\SiteContentController;
@@ -69,5 +70,9 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/config', [Admin\SiteConfigController::class, 'index']);
         Route::put('/config/{key}', [Admin\SiteConfigController::class, 'upsert']);
         Route::delete('/config/{key}', [Admin\SiteConfigController::class, 'destroy']);
+
+        // Site settings (active layout + hidden public sections)
+        Route::get('/settings', [SettingsController::class, 'show']);
+        Route::put('/settings', [SettingsController::class, 'update']);
     });
 });

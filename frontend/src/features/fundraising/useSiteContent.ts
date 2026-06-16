@@ -61,6 +61,7 @@ const fallback: SiteContent = {
   amounts:      [...staticData.amounts],
   testimonials: [],
   gallery:      [],
+  settings:     { layout: 'classic', hiddenSections: [] },
 }
 
 export function useSiteContent() {

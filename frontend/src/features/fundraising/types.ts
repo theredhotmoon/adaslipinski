@@ -93,4 +93,14 @@ export interface SiteContent {
   amounts: number[]
   testimonials: { id: number; quote: string; authorName: string; authorRole: string; photoUrl?: string }[]
   gallery: { id: number; url: string }[]
+  settings: SiteSettings
+}
+
+export type LayoutId = 'classic' | 'editorial' | 'dashboard'
+
+export interface SiteSettings {
+  /** Active desktop layout (admin-controlled; visitors no longer switch). */
+  layout: LayoutId
+  /** Public sections hidden on the Astro site (SPA still renders everything). */
+  hiddenSections: string[]
 }

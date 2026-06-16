@@ -232,12 +232,29 @@
       "post": "wpis",
       "expense": "wydatek",
       "faq": "pytanie"
+    },
+    "settings": {
+      "title": "Ustawienia strony",
+      "layoutLabel": "Układ (desktop)",
+      "sectionsLabel": "Sekcje publiczne",
+      "sectionsHint": "Odznaczone sekcje są ukryte na stronie publicznej.",
+      "hidden": "Ukryta",
+      "sections": {
+        "budget": "Budżet",
+        "progress": "Postępy",
+        "expenses": "Wydatki",
+        "tax": "1,5% podatku",
+        "foundation": "Fundacja",
+        "partners": "Partnerzy",
+        "faq": "FAQ"
+      }
     }
   },
   "d": {
     "nav": { "about": "O Adasiu", "budget": "Na co zbieramy", "progress": "Postępy", "tax": "1,5%", "transparency": "Transparentność", "donate": "Wpłać" },
     "switcher": {
       "version": "Wersja",
+      "preview": "Podgląd",
       "classic": "Klasyczny",
       "editorial": "Editorial",
       "dashboard": "Transparentny",

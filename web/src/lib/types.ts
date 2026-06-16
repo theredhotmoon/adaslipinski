@@ -97,4 +97,12 @@ export interface SiteContent {
   amounts: number[]
   testimonials: { id: number; quote: string; authorName: string; authorRole: string; photoUrl?: string }[]
   gallery: { id: number; url: string }[]
+  settings: SiteSettings
+}
+
+export interface SiteSettings {
+  /** SPA-only; the Astro site has a single design. Included for completeness. */
+  layout: 'classic' | 'editorial' | 'dashboard'
+  /** Public sections the admin has hidden on this site. */
+  hiddenSections: string[]
 }
