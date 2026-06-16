@@ -240,13 +240,16 @@
       "sectionsHint": "Odznaczone sekcje są ukryte na stronie publicznej.",
       "hidden": "Ukryta",
       "sections": {
+        "about": "Historia",
         "budget": "Budżet",
         "progress": "Postępy",
         "expenses": "Wydatki",
         "tax": "1,5% podatku",
+        "testimonials": "Opinie",
         "foundation": "Fundacja",
         "partners": "Partnerzy",
-        "faq": "FAQ"
+        "faq": "FAQ",
+        "gallery": "Galeria"
       }
     }
   },

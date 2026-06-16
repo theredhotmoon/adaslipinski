@@ -240,13 +240,16 @@
       "sectionsHint": "Unchecked sections are hidden on the public site.",
       "hidden": "Hidden",
       "sections": {
+        "about": "Story",
         "budget": "Budget",
         "progress": "Updates",
         "expenses": "Expenses",
         "tax": "1.5% tax",
+        "testimonials": "Testimonials",
         "foundation": "Foundation",
         "partners": "Partners",
-        "faq": "FAQ"
+        "faq": "FAQ",
+        "gallery": "Gallery"
       }
     }
   },

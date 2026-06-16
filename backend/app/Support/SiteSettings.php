@@ -21,7 +21,10 @@ class SiteSettings
     public const DEFAULT_LAYOUT = 'classic';
 
     /** Public sections an admin may hide on the Astro site (also the render order). */
-    public const SECTIONS = ['budget', 'progress', 'expenses', 'tax', 'foundation', 'partners', 'faq'];
+    public const SECTIONS = [
+        'about', 'budget', 'progress', 'expenses', 'tax',
+        'testimonials', 'foundation', 'partners', 'faq', 'gallery',
+    ];
 
     public static function layout(): string
     {
