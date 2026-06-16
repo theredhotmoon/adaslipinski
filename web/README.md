@@ -79,14 +79,18 @@ whose resolver the Vite plugin variant isn't yet compatible with (it throws
 > Until then, ship content by running a build manually.
 
 Built as static `dist/` → deploy to any static host/CDN. Because content is baked at
-build time, a **rebuild trigger** is wired on the Laravel side: changes to any CMS
-content model ping a deploy hook to rebuild & redeploy this site.
+build time, there are **two rebuild triggers** — they can point at the same host build
+hook:
 
-- Backend: `App\Jobs\TriggerSiteRebuild` + `App\Observers\CmsContentObserver`
-  (registered in `AppServiceProvider`). Set `DEPLOY_HOOK_URL` in the backend `.env` to a
-  Netlify/Vercel build hook or CI trigger. Empty = disabled. A burst of edits is
-  debounced into one rebuild (`DEPLOY_HOOK_DEBOUNCE`, default 60s). Needs a queue worker
-  (`php artisan queue:work`).
+- **Content changes** (Laravel): `App\Jobs\TriggerSiteRebuild` +
+  `App\Observers\CmsContentObserver` (registered in `AppServiceProvider`). Set
+  `DEPLOY_HOOK_URL` in the backend `.env` to a Netlify/Vercel build hook or CI trigger.
+  Empty = disabled. A burst of edits is debounced into one rebuild
+  (`DEPLOY_HOOK_DEBOUNCE`, default 60s). Needs a queue worker (`php artisan queue:work`).
+- **Code changes** (CI): the `deploy-web` job in `.github/workflows/ci.yml` POSTs to the
+  build hook on every push to `main`, after the full test suite passes. Set the
+  `WEB_DEPLOY_HOOK_URL` **GitHub Actions secret** to enable it; until then the job logs
+  a skip and passes. So when you change `web/` code, the merge itself redeploys.
 
 For any route that must be always-fresh instead, add an SSR adapter
 (`@astrojs/node`/`vercel`/`cloudflare`) and put `export const prerender = false` in it.
