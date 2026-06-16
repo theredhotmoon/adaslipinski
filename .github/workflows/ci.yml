@@ -87,3 +87,31 @@ jobs:
       # content (see src/lib/fallback.ts) — it must still produce a complete site.
       - name: Build
         run: npm run build
+
+  deploy-web:
+    name: Deploy public site (trigger build hook)
+    # Only after the whole suite is green, and only for pushes to the default
+    # branch (a squash-merge lands here) — never on pull requests.
+    needs: [backend, frontend, web]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      # Pings the host's build hook so a *code* change to web/ redeploys the static
+      # site. (The Laravel DEPLOY_HOOK_URL handles *content* changes; both can point
+      # at the same hook.) No-op until the WEB_DEPLOY_HOOK_URL secret is set, so this
+      # is safe before a host exists.
+      - name: Trigger deploy hook
+        env:
+          HOOK_URL: ${{ secrets.WEB_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK_URL" ]; then
+            echo "WEB_DEPLOY_HOOK_URL is not set — skipping deploy (no host configured yet)."
+            exit 0
+          fi
+          echo "Triggering public-site rebuild…"
+          code=$(curl -sS -X POST -o /dev/null -w '%{http_code}' "$HOOK_URL")
+          echo "Deploy hook responded with HTTP $code"
+          case "$code" in
+            2*) echo "Deploy triggered." ;;
+            *)  echo "::error::Deploy hook failed (HTTP $code)"; exit 1 ;;
+          esac
