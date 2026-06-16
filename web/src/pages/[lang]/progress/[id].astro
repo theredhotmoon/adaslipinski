@@ -1,0 +1,71 @@
+---
+import { LOCALES, type Locale } from '../../../i18n/config'
+import { zl } from '../../../i18n/config'
+import { useT } from '../../../i18n/ui'
+import { fetchSite } from '../../../lib/cms'
+import type { SiteContent, ProgressPost } from '../../../lib/types'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import CmsImage from '../../../components/CmsImage.astro'
+
+// Build one page per progress post per locale: /pl/progress/1, /en/progress/1, …
+export async function getStaticPaths() {
+  const paths = []
+  for (const lang of LOCALES) {
+    const site = await fetchSite(lang)
+    for (const post of site.progress) {
+      paths.push({ params: { lang, id: String(post.id) }, props: { site, post } })
+    }
+  }
+  return paths
+}
+
+interface Props { site: SiteContent; post: ProgressPost }
+const lang = Astro.params.lang as Locale
+const { site, post } = Astro.props as Props
+const t = useT(lang)
+
+const title = `${post.title} | ${site.child.name}`
+const description = post.body.slice(0, 155)
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.title,
+  articleBody: post.body,
+  datePublished: post.date,
+  image: post.imgUrl,
+  author: { '@type': 'Organization', name: site.foundation.name },
+}
+---
+
+<BaseLayout
+  locale={lang}
+  path={`progress/${post.id}`}
+  {title}
+  {description}
+  image={post.imgUrl}
+  jsonLd={articleJsonLd}
+  {t}
+  {site}
+>
+  <article class="post">
+    <a class="back" href={`/${lang}#progress`}>← {t('common.back')}</a>
+    <div class="meta"><span class="tag">{post.tag}</span><time>{post.date}</time></div>
+    <h1 class="title">{post.title}</h1>
+    {post.imgUrl && <CmsImage class="img" src={post.imgUrl} alt={post.img} loading="eager" />}
+    <p class="body">{post.body}</p>
+    {post.amount != null && <p class="amount">{zl(post.amount)}</p>}
+  </article>
+</BaseLayout>
+
+<style>
+  .post { padding: 18px 18px 40px; }
+  .back { display: inline-block; margin-bottom: 16px; font-size: 13px; font-weight: 700; color: var(--color-fr-primary); text-decoration: none; }
+  .meta { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .tag { font-size: 11px; font-weight: 800; color: var(--color-fr-primary); background: var(--color-fr-primary-soft); padding: 3px 9px; border-radius: 999px; }
+  .meta time { font-size: 12.5px; color: var(--color-fr-ink-soft); }
+  .title { margin: 0 0 16px; font-size: 26px; font-weight: 800; line-height: 1.2; color: var(--color-fr-ink); }
+  .img { width: 100%; border-radius: 20px; margin-bottom: 18px; aspect-ratio: 16 / 9; object-fit: cover; }
+  .body { margin: 0; font-size: 16px; line-height: 1.65; color: var(--color-fr-ink); }
+  .amount { margin: 18px 0 0; font-weight: 800; font-size: 16px; color: var(--color-fr-primary); }
+</style>

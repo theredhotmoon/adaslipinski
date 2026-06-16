@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets'
+
+// Optimized, responsive image for remote CMS/media URLs. Wraps astro:assets <Image>:
+// `inferSize` lets Astro read the source dimensions at build (so callers don't pass
+// width/height), and `widths`/`sizes` emit a responsive srcset. The source host must
+// be allowed by `image.remotePatterns` in astro.config.mjs.
+//
+// Note: for static builds this fetches + processes the remote image at BUILD time, so
+// the media host must be reachable during a build/rebuild (it is — rebuilds are
+// triggered by the CMS, which is up). Callers still guard on a present URL.
+interface Props {
+  src: string
+  alt: string
+  class?: string
+  loading?: 'eager' | 'lazy'
+  sizes?: string
+  widths?: number[]
+}
+
+const {
+  src,
+  alt,
+  class: className,
+  loading = 'lazy',
+  sizes = '(min-width: 460px) 460px, 100vw',
+  widths = [320, 460, 768],
+} = Astro.props
+---
+
+<Image src={src} alt={alt} class={className} loading={loading} decoding="async" inferSize widths={widths} sizes={sizes} />

@@ -1,0 +1,67 @@
+---
+import { LOCALES, DEFAULT_LOCALE, type Locale } from '../i18n/config'
+
+interface Props {
+  locale: Locale
+  /** Path within the locale, no leading/trailing slash. '' = locale home. e.g. 'progress/1' */
+  path?: string
+  title: string
+  description: string
+  image?: string
+  /** Page-specific structured data (e.g. Article). Merged with the site-wide NGO node. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+}
+
+const { locale, path = '', title, description, image, jsonLd } = Astro.props
+const site = Astro.site ?? new URL('https://adaslipinski.pl')
+
+// Trailing slash to match Astro's directory build output and @astrojs/sitemap, so the
+// canonical, hreflang, and sitemap URLs are byte-identical (no mixed signals).
+const sub = path ? `/${path}` : ''
+const canonical = new URL(`/${locale}${sub}/`, site).href
+
+// hreflang alternates: same page in every locale + x-default → the default locale.
+const alternates = [
+  ...LOCALES.map((l) => ({ hreflang: l, href: new URL(`/${l}${sub}/`, site).href })),
+  { hreflang: 'x-default', href: new URL(`/${DEFAULT_LOCALE}${sub}/`, site).href },
+]
+
+const ogImage = image ? new URL(image, site).href : undefined
+const structured = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content="index, follow" />
+
+{alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+
+<!-- Open Graph / Twitter -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Adaś Lipiński" />
+<meta property="og:locale" content={locale === 'pl' ? 'pl_PL' : 'en_US'} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+
+<!-- Fonts: Nunito to match the SPA -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
+/>
+
+{structured.map((node) => (
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(node)} />
+))}

@@ -1,0 +1,39 @@
+---
+import type { SiteContent } from '../../lib/types'
+import type { Translator } from '../../i18n/ui'
+import FaqAccordion from '../islands/FaqAccordion.vue'
+import CmsImage from '../CmsImage.astro'
+
+interface Props { site: SiteContent; t: Translator }
+const { site, t } = Astro.props
+---
+
+<section class="sec" id="faq">
+  {site.partners.length > 0 && (
+    <div class="partners">
+      <p class="block-title">{t('home.partners')}</p>
+      <ul class="logos">
+        {site.partners.map((p) => (
+          <li class="logo">
+            {p.logoUrl ? <CmsImage src={p.logoUrl} alt={p.name} loading="lazy" widths={[120, 240]} sizes="120px" /> : <span>{p.name}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  <p class="kicker">{t('home.faqTitle')}</p>
+  <!-- FAQ questions/answers are in the SSR HTML below; the island only adds the
+       expand/collapse behaviour, so the text is fully indexable pre-hydration. -->
+  <FaqAccordion client:visible items={site.faq} />
+</section>
+
+<style>
+  .sec { padding: 28px 18px 8px; }
+  .partners { margin-bottom: 28px; }
+  .block-title { margin: 0 0 12px; font-weight: 800; font-size: 14px; color: var(--color-fr-ink); }
+  .logos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .logo { padding: 10px 14px; background: var(--color-fr-surface); border: 1px solid var(--color-fr-line); border-radius: 12px; font-weight: 700; font-size: 13px; color: var(--color-fr-ink-soft); }
+  .logo img { height: 28px; width: auto; display: block; }
+  .kicker { margin: 0 0 12px; font-size: 12.5px; font-weight: 800; color: var(--color-fr-primary); text-transform: uppercase; letter-spacing: 0.04em; }
+</style>

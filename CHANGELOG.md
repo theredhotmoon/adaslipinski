@@ -7,6 +7,20 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- **Server-rendered public website** (`web/`) — a new Astro app that renders the
+  public site to complete, SEO-indexable HTML while keeping the Laravel CMS and the
+  Vue admin SPA untouched. It fetches `/cms/site?lang=` at build time and reuses the
+  interactive UI as **Vue islands** (donate modal/triggers, FAQ accordion) that
+  coordinate via a nanostore; everything else ships as zero-JS static HTML. Real
+  per-locale URLs (`/pl`, `/en`) with `hreflang` + canonical (replacing the SPA's
+  client-only locale switch), one page per progress post, `NGO`/`Article` JSON-LD,
+  auto `sitemap.xml`, and responsive image optimization for CMS media via
+  `astro:assets`. Builds fall back to bundled content when the API is offline.
+- **Static-site rebuild hook** (backend) — when published CMS content changes, a
+  debounced, queued job (`TriggerSiteRebuild` + `CmsContentObserver`) pings a deploy
+  hook (`DEPLOY_HOOK_URL`) to rebuild & redeploy the public site. Disabled by default
+  (no-op until the URL is set); a burst of edits coalesces into one rebuild. Covered
+  by feature tests.
 - Image upload for the **About gallery** and **testimonial photos** — completing
   image upload across every slot. New `gallery_images` table + `GalleryImage`
   model + admin CRUD (`/admin/gallery`); the About "everyday life" grid renders

@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    // Static public site (web/) deploy hook. When a CMS edit changes published
+    // content, we ping this URL to rebuild & redeploy the Astro site. Leave the
+    // URL empty (the default) to disable the integration entirely — nothing fires.
+    'deploy' => [
+        'hook_url' => env('DEPLOY_HOOK_URL'),
+        'hook_method' => env('DEPLOY_HOOK_METHOD', 'POST'),
+        // Coalesce a burst of edits into one rebuild: wait this many seconds after
+        // the first change before firing, and ignore further changes in the window.
+        'debounce' => (int) env('DEPLOY_HOOK_DEBOUNCE', 60),
+    ],
+
 ];

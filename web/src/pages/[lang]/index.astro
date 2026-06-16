@@ -1,0 +1,111 @@
+---
+import { LOCALES, type Locale } from '../../i18n/config'
+import { useT } from '../../i18n/ui'
+import { fetchSite } from '../../lib/cms'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Hero from '../../components/sections/Hero.astro'
+import Budget from '../../components/sections/Budget.astro'
+import Progress from '../../components/sections/Progress.astro'
+import Expenses from '../../components/sections/Expenses.astro'
+import Tax from '../../components/sections/Tax.astro'
+import Foundation from '../../components/sections/Foundation.astro'
+import Community from '../../components/sections/Community.astro'
+import DonateModal from '../../components/islands/DonateModal.vue'
+import DonateTrigger from '../../components/islands/DonateTrigger.vue'
+
+// One built page per locale → /pl and /en.
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }))
+}
+
+const lang = Astro.params.lang as Locale
+const t = useT(lang)
+const site = await fetchSite(lang) // build-time fetch → baked into static HTML
+
+const { child, foundation: fo } = site
+
+// SEO
+const title = `${child.heroTitle} | Adaś Lipiński`
+const description = child.heroSubtitle
+
+// Site-wide structured data: the foundation/NGO behind the fundraiser.
+const ngoJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: fo.name,
+  url: Astro.site?.href,
+  email: fo.email,
+  telephone: fo.phone,
+  address: fo.address,
+  identifier: `KRS ${fo.krs}`,
+  taxID: fo.nip,
+}
+
+// Pre-resolved strings for the donate island (no vue-i18n inside islands).
+const donateStrings = {
+  support: t('donateModal.support'),
+  fund: t('donateModal.fund'),
+  once: t('donate.once'),
+  monthly: t('donate.monthly'),
+  monthlyHint: t('donateModal.monthlyHint'),
+  method: t('donateModal.method'),
+  methodCard: t('donateModal.methodCard'),
+  methodTransfer: t('donateModal.methodTransfer'),
+  blikPrompt: t('donateModal.blikPrompt'),
+  blikNote: t('donateModal.blikNote'),
+  accountPln: t('donateModal.accountPln'),
+  transferTitleReq: t('donateModal.transferTitleReq'),
+  didTransfer: t('donateModal.didTransfer'),
+  payNow: t('donateModal.payNow'),
+  payNowMonthly: t('donateModal.payNowMonthly'),
+  securityNote: t('donateModal.securityNote', { foundation: fo.name, krs: fo.krs }),
+  thanks: t('donateModal.thanks'),
+  thanksMonthly: t('donateModal.thanksMonthly'),
+  thanksOnce: t('donateModal.thanksOnce'),
+  close: t('common.close'),
+  custom: t('donate.custom'),
+  copy: t('common.copy'),
+  copied: t('common.copied'),
+}
+---
+
+<BaseLayout locale={lang} title={title} description={description} image={child.heroImageUrl} jsonLd={ngoJsonLd} {t} {site}>
+  <Hero {site} {t} />
+  <Budget {site} {t} />
+  <Progress {site} {t} locale={lang} />
+  <Expenses {site} {t} />
+  <Tax {site} {t} />
+  <Foundation {site} {t} />
+  <Community {site} {t} />
+
+  <!-- Sticky donate bar: chrome → hydrate when idle. -->
+  <div class="donate-bar">
+    <DonateTrigger client:idle label={child.ctaBarLabel} variant="bar" freq="monthly" />
+  </div>
+
+  <!-- The single shared modal; all triggers reach it via the nanostore. -->
+  <DonateModal
+    client:idle
+    strings={donateStrings}
+    amounts={site.amounts}
+    name={child.name}
+    accountPln={fo.accounts[0]?.iban ?? ''}
+    cel={fo.cel}
+  />
+</BaseLayout>
+
+<style>
+  .donate-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 460px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: color-mix(in oklch, var(--color-fr-surface) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--color-fr-line);
+    z-index: 60;
+  }
+</style>

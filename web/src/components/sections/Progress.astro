@@ -1,0 +1,50 @@
+---
+import type { SiteContent } from '../../lib/types'
+import type { Translator } from '../../i18n/ui'
+import type { Locale } from '../../i18n/config'
+import { zl } from '../../i18n/config'
+import CmsImage from '../CmsImage.astro'
+
+interface Props { site: SiteContent; t: Translator; locale: Locale }
+const { site, t, locale } = Astro.props
+---
+
+<section class="sec" id="progress">
+  <p class="kicker">{t('progress.kicker')}</p>
+  <h2 class="h2">{t('progress.title', { name: site.child.name })}</h2>
+  <p class="sub">{t('progress.subtitle')}</p>
+
+  <div class="posts">
+    {site.progress.map((p) => (
+      <article class="post">
+        {p.imgUrl && <CmsImage class="post-img" src={p.imgUrl} alt={p.img} loading="lazy" />}
+        <div class="post-body">
+          <div class="post-meta"><span class="tag">{p.tag}</span><time>{p.date}</time></div>
+          <h3 class="post-title">
+            <a href={`/${locale}/progress/${p.id}`}>{p.title}</a>
+          </h3>
+          <p class="post-text">{p.body}</p>
+          {p.amount != null && <p class="post-amount">{zl(p.amount)}</p>}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .sec { padding: 28px 18px 8px; }
+  .kicker { margin: 0 0 6px; font-size: 12.5px; font-weight: 800; color: var(--color-fr-primary); text-transform: uppercase; letter-spacing: 0.04em; }
+  .h2 { margin: 0 0 6px; font-size: 23px; font-weight: 800; color: var(--color-fr-ink); }
+  .sub { margin: 0 0 16px; font-size: 14px; color: var(--color-fr-ink-soft); line-height: 1.5; }
+  .posts { display: flex; flex-direction: column; gap: 14px; }
+  .post { background: var(--color-fr-surface); border: 1px solid var(--color-fr-line); border-radius: 20px; overflow: hidden; }
+  .post-img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+  .post-body { padding: 14px 15px 16px; }
+  .post-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .tag { font-size: 11px; font-weight: 800; color: var(--color-fr-primary); background: var(--color-fr-primary-soft); padding: 3px 9px; border-radius: 999px; }
+  .post-meta time { font-size: 12px; color: var(--color-fr-ink-soft); }
+  .post-title { margin: 0 0 6px; font-size: 17px; font-weight: 800; color: var(--color-fr-ink); line-height: 1.25; }
+  .post-title a { text-decoration: none; }
+  .post-text { margin: 0; font-size: 14px; line-height: 1.55; color: var(--color-fr-ink-soft); }
+  .post-amount { margin: 10px 0 0; font-weight: 800; font-size: 14px; color: var(--color-fr-primary); }
+</style>
