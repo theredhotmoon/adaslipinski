@@ -17,21 +17,39 @@ beneficiaries. It pairs a polished, mobile-first donation page with a built-in,
   on the page. Add/remove budget items, expenses, progress posts, FAQ, etc.
 - **Responsive** — separate mobile and desktop component sets; desktop ships
   three layout variants (Classic, Editorial, Dashboard).
+- **SEO-first public site** — a separate server-rendered **Astro** build (`web/`)
+  emits complete HTML with per-locale URLs (`/pl`, `/en`), `hreflang`, `NGO`/`Article`
+  JSON-LD, and a sitemap, reusing the interactive UI as zero-JS-by-default Vue islands.
 - **Simple auth** — email-whitelist login (Laravel Passport / JWT). The first
   login with a whitelisted email auto-creates the account.
 
+## 🧭 Architecture
+
+Three parts, cleanly decoupled around one API:
+
+| Dir         | Role |
+| ----------- | ---- |
+| `backend/`  | Laravel **headless CMS** + JSON API (`/cms/site`, admin CRUD, auth, media). |
+| `frontend/` | Vue 3 **SPA** where admins log in and **edit the live site inline**. |
+| `web/`      | Server-rendered **Astro** public site — fetches the API at build time and renders complete, SEO-indexable HTML (Vue islands for the interactive bits). This is what visitors and search engines see. |
+
+Visitors get the fast, static `web/` site; admins use the `frontend/` SPA to edit;
+both read the same `backend/` API. See [`web/README.md`](web/README.md) for the public
+site's internals and deploy/rebuild hooks.
+
 ## 🧱 Tech Stack
 
-| Layer    | Tech                                                            |
-| -------- | -------------------------------------------------------------- |
-| Frontend | Vue 3 + TypeScript, Vite, Tailwind CSS v4, Pinia, TanStack Query |
-| Backend  | Laravel 13, SQLite, Laravel Passport (JWT)                     |
-| Tooling  | ESLint, Prettier, Vitest, Playwright, Docker                   |
+| Layer       | Tech                                                            |
+| ----------- | -------------------------------------------------------------- |
+| Public site | Astro 6 (SSG) + Vue islands, Tailwind CSS v4, nanostores       |
+| Frontend    | Vue 3 + TypeScript, Vite, Tailwind CSS v4, Pinia, TanStack Query |
+| Backend     | Laravel 13, SQLite, Laravel Passport (JWT)                     |
+| Tooling     | ESLint, Prettier, Vitest, Playwright, Docker                   |
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 20+ and npm
+- Node.js 20+ and npm (the `web/` Astro app needs **Node 22.12+**)
 - PHP 8.3+ and Composer  *(or just Docker for the backend)*
 
 ### 1. Backend (Laravel API)
@@ -78,9 +96,23 @@ npm install
 npm run dev                      # http://localhost:5173
 ```
 
-### 3. Log in & edit
-Open the site, click the admin bar (bottom-right), and log in with an email
-listed in `ADMIN_EMAILS`. Your first login sets that account's password.
+### 3. Public site (Astro) — optional for local dev
+
+```bash
+cd web
+cp .env.example .env              # CMS_API_URL defaults to http://localhost:8000/api
+npm install
+npm run dev                       # http://localhost:4321  (/pl, /en)
+# npm run build && npm run preview  # production static build (falls back to
+                                    # bundled content if the API is offline)
+```
+
+The `frontend/` SPA is where you **edit** content; `web/` is the **public** site
+visitors see. See [`web/README.md`](web/README.md) for islands, i18n, and deploys.
+
+### 4. Log in & edit
+Open the `frontend/` SPA, click the admin bar (bottom-right), and log in with an
+email listed in `ADMIN_EMAILS`. Your first login sets that account's password.
 
 ## ⚙️ Configuration
 
@@ -91,6 +123,10 @@ listed in `ADMIN_EMAILS`. Your first login sets that account's password.
 | `CORS_ALLOWED_ORIGINS`  | backend `.env`   | Override CORS origins (comma-separated; `*` for all) |
 | `APP_KEY`               | backend `.env`   | Laravel encryption key (`php artisan key:generate`)  |
 | `VITE_API_URL`          | frontend `.env`  | Base URL of the API (e.g. `https://api.example.com/api`) |
+| `CMS_API_URL`           | web `.env`       | API the Astro site fetches at build time (server-only)   |
+| `PUBLIC_SITE_URL`       | web `.env`       | Canonical public origin (canonical/hreflang/sitemap)     |
+| `DEPLOY_HOOK_URL`       | backend `.env`   | Build hook pinged on CMS **content** change (empty = off; needs a queue worker) |
+| `WEB_DEPLOY_HOOK_URL`   | GitHub secret    | Build hook pinged by CI on **code** push to `main` (empty = skipped) |
 | `TOLGEE_API_KEY`        | shell env        | Tolgee Project API Key for translation sync (optional)   |
 
 ## 🌍 Translations (Tolgee)
