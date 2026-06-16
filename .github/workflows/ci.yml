@@ -88,6 +88,14 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Browser-level smoke test: catches client hydration regressions that blank the
+      # page (which a plain HTTP/build check cannot). Runs against `astro preview`.
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E smoke test
+        run: npm run test:e2e
+
   deploy-web:
     name: Deploy public site (trigger build hook)
     # Only after the whole suite is green, and only for pushes to the default
