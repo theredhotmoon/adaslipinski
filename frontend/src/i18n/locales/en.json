@@ -214,12 +214,6 @@
   "admin": {
     "mode": "Admin mode",
     "logout": "Log out",
-    "loginTitle": "Admin login",
-    "passwordLabel": "Password",
-    "loginError": "Login failed",
-    "loggingIn": "Signing in…",
-    "signIn": "Sign in",
-    "authorizedOnly": "Authorized email addresses only",
     "confirmDelete": "Delete {item}?",
     "thisItem": "this item",
     "delete": "Delete",

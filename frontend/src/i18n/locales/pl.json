@@ -214,12 +214,6 @@
   "admin": {
     "mode": "Tryb admin",
     "logout": "Wyloguj",
-    "loginTitle": "Logowanie admina",
-    "passwordLabel": "Hasło",
-    "loginError": "Błąd logowania",
-    "loggingIn": "Logowanie…",
-    "signIn": "Zaloguj się",
-    "authorizedOnly": "Tylko dla autoryzowanych adresów e-mail",
     "confirmDelete": "Usunąć {item}?",
     "thisItem": "ten element",
     "delete": "Usuń",

@@ -30,19 +30,19 @@ async function handleSubmit() {
     <form class="login-form" @submit.prevent="handleSubmit">
       <h1>Sign in</h1>
 
-      <div v-if="error" class="error">{{ error }}</div>
+      <div v-if="error" class="error" data-testid="login-error">{{ error }}</div>
 
       <label>
         Email
-        <input v-model="email" type="email" required autocomplete="email" />
+        <input v-model="email" type="email" required autocomplete="email" data-testid="login-email" />
       </label>
 
       <label>
         Password
-        <input v-model="password" type="password" required autocomplete="current-password" />
+        <input v-model="password" type="password" required autocomplete="current-password" data-testid="login-password" />
       </label>
 
-      <button type="submit" :disabled="loading">
+      <button type="submit" :disabled="loading" data-testid="login-submit">
         {{ loading ? 'Signing in…' : 'Sign in' }}
       </button>
     </form>

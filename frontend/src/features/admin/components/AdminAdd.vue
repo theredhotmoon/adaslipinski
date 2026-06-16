@@ -5,7 +5,7 @@ import { theme } from '@/features/fundraising/data'
 const { c } = theme
 const { t } = useI18n()
 
-defineProps<{ label?: string }>()
+defineProps<{ label?: string; testid?: string }>()
 const emit = defineEmits<{ click: [] }>()
 
 const auth = useAuthStore()
@@ -14,6 +14,7 @@ const auth = useAuthStore()
 <template>
   <button
     v-if="auth.isAuthenticated"
+    :data-testid="testid"
     :style="{
       display: 'flex', alignItems: 'center', gap: '6px',
       padding: '8px 14px', border: `1.5px dashed ${c.primary}`,

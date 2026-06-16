@@ -13,6 +13,12 @@ dist-ssr
 *.local
 coverage
 
+# Playwright e2e artifacts
+test-results
+playwright-report
+blob-report
+playwright/.cache
+
 # Local env files (keep the template)
 .env
 .env.*
