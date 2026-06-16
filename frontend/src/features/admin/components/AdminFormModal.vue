@@ -14,6 +14,7 @@ const emit = defineEmits<{ close: []; save: [] }>()
     <div v-if="open" class="fixed inset-0 z-[3500] flex items-end justify-center">
       <div class="absolute inset-0 bg-black/30 backdrop-blur-[2px]" @click="emit('close')" />
       <div
+        data-testid="admin-modal"
         class="relative w-full max-w-[430px] bg-white rounded-t-3xl shadow-2xl animate-sheet-up"
         style="max-height: 85vh; display: flex; flex-direction: column;"
       >
@@ -29,6 +30,7 @@ const emit = defineEmits<{ close: []; save: [] }>()
         </div>
         <div class="px-5 py-4 border-t border-gray-100 flex gap-3">
           <button
+            data-testid="admin-modal-save"
             class="flex-1 py-3 rounded-xl font-black text-sm transition-opacity disabled:opacity-50"
             :style="{ background: c.primary, color: c.primaryInk, fontFamily: 'inherit' }"
             :disabled="saving"

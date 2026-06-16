@@ -94,6 +94,7 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
       </div>
       <InlineText
         tag="h1"
+        data-testid="edit-hero-title"
         :value="d.child?.heroTitle ?? theme.copy.heroTitle"
         :multiline="true"
         @save="patchBeneficiary({ hero_title: $event })"
@@ -210,7 +211,7 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
     </div>
 
     <!-- FAQ -->
-    <div style="padding: 24px 18px 0;">
+    <div data-testid="faq-section" style="padding: 24px 18px 0;">
       <div :style="{ marginBottom: '12px', fontSize: '12.5px', fontWeight: 800, color: c.inkSoft, textTransform: 'uppercase', letterSpacing: '0.05em' }">{{ t('home.faqTitle') }}</div>
       <FrAccordion
         :items="faqItems"
@@ -218,18 +219,18 @@ const faqItems = computed(() => d.value.faq ?? staticData.faq)
         @edit-answer="updateFaq({ id: $event.id, answer: $event.value })"
         @remove="deleteFaq($event)"
       />
-      <AdminAdd :label="t('home.addQuestion')" @click="showAddFaq = true" />
+      <AdminAdd testid="faq-add" :label="t('home.addQuestion')" @click="showAddFaq = true" />
     </div>
 
     <!-- Add FAQ modal -->
     <AdminFormModal :title="t('home.addFaqTitle')" :open="showAddFaq" :saving="addingFaq" @close="showAddFaq = false" @save="submitFaq">
       <label class="block mb-3">
         <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('home.faqQuestionLabel') }}</span>
-        <input v-model="newFaqQ" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
+        <input v-model="newFaqQ" data-testid="faq-input-question" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400" />
       </label>
       <label class="block">
         <span class="text-xs font-bold text-gray-500 mb-1 block">{{ t('home.faqAnswerLabel') }}</span>
-        <textarea v-model="newFaqA" rows="4" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400 resize-none" />
+        <textarea v-model="newFaqA" data-testid="faq-input-answer" rows="4" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400 resize-none" />
       </label>
     </AdminFormModal>
 

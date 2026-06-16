@@ -24,6 +24,7 @@ const toggle = (i: number) => { open.value = open.value === i ? null : i }
     <div
       v-for="(it, i) in items"
       :key="it.id ?? i"
+      data-testid="faq-row"
       :style="{ background: c.surface, border: `1px solid ${c.line}`, borderRadius: r + 'px', overflow: 'hidden' }"
     >
       <div

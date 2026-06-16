@@ -58,6 +58,8 @@ async function save() {
           v-for="id in (data?.availableLayouts ?? [])"
           :key="id"
           type="button"
+          :data-testid="`settings-layout-${id}`"
+          :aria-pressed="layout === id"
           class="flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-colors"
           :class="layout === id ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:bg-gray-50'"
           @click="layout = id"
@@ -84,6 +86,7 @@ async function save() {
         >
           <input
             type="checkbox"
+            :data-testid="`settings-section-${key}`"
             class="w-4 h-4 accent-emerald-600"
             :checked="!hidden.has(key)"
             @change="toggleSection(key)"
