@@ -102,6 +102,10 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
   the environment instead of hardcoded values.
 
 ### Fixed
+- Public Astro site **blanked right after loading**: the donate-modal island's root
+  was a `<Teleport>`, which can't be server-rendered/hydrated as an Astro island — the
+  SSR/client DOM mismatched and wiped the page. The modal now renders `client:only`
+  with a layout-neutral root wrapper (it's closed by default, so no SSR value is lost).
 - Admin login returned **500 on a fresh stack** because no Passport personal access
   client existed (`createToken` requires one). The Docker entrypoint now creates it
   (guarded against duplicates) and the README quickstart documents the local step.

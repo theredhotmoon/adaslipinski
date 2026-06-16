@@ -94,9 +94,12 @@ const donateStrings = {
     <DonateTrigger client:idle label={child.ctaBarLabel} variant="bar" freq="monthly" />
   </div>
 
-  <!-- The single shared modal; all triggers reach it via the nanostore. -->
+  <!-- The single shared modal; all triggers reach it via the nanostore. Rendered
+       client:only because its root is a <Teleport to="body"> — teleport-root islands
+       can't be server-rendered/hydrated cleanly (the SSR/client DOM mismatches and
+       blanks the page). The modal is closed by default, so it has no SSR value. -->
   <DonateModal
-    client:idle
+    client:only="vue"
     strings={donateStrings}
     amounts={site.amounts}
     name={child.name}

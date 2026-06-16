@@ -91,7 +91,10 @@ function copyCel() {
 </script>
 
 <template>
-  <Teleport to="body">
+  <!-- A real (layout-neutral) root element so Astro can attach its island/scoped
+       attributes here rather than to the Teleport, which Vue can't inherit onto. -->
+  <div style="display: contents">
+    <Teleport to="body">
     <div v-if="state.open" class="overlay" role="dialog" aria-modal="true">
       <div class="scrim" @click="closeDonate" />
       <div class="sheet animate-sheet-up">
@@ -172,7 +175,8 @@ function copyCel() {
         </div>
       </div>
     </div>
-  </Teleport>
+    </Teleport>
+  </div>
 </template>
 
 <style scoped>
