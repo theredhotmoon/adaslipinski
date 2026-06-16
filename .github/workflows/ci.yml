@@ -59,3 +59,30 @@ jobs:
 
       - name: Run tests
         run: npm run test
+
+  web:
+    name: Public site (Astro build + check)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run check
+
+      # The CMS API isn't reachable in CI, so the build uses bundled fallback
+      # content (see src/lib/fallback.ts) — it must still produce a complete site.
+      - name: Build
+        run: npm run build
