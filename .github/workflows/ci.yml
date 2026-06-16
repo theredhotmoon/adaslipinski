@@ -72,7 +72,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Astro 6 requires Node >=22.12 (the frontend SPA job stays on 20).
+          node-version: '22'
           cache: npm
           cache-dependency-path: web/package-lock.json
 
