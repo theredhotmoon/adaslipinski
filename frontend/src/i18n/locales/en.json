@@ -232,12 +232,29 @@
       "post": "this post",
       "expense": "this expense",
       "faq": "this question"
+    },
+    "settings": {
+      "title": "Site settings",
+      "layoutLabel": "Desktop layout",
+      "sectionsLabel": "Public sections",
+      "sectionsHint": "Unchecked sections are hidden on the public site.",
+      "hidden": "Hidden",
+      "sections": {
+        "budget": "Budget",
+        "progress": "Updates",
+        "expenses": "Expenses",
+        "tax": "1.5% tax",
+        "foundation": "Foundation",
+        "partners": "Partners",
+        "faq": "FAQ"
+      }
     }
   },
   "d": {
     "nav": { "about": "About {name}", "budget": "Goals", "progress": "Updates", "tax": "1.5%", "transparency": "Transparency", "donate": "Donate" },
     "switcher": {
       "version": "Version",
+      "preview": "Preview",
       "classic": "Classic",
       "editorial": "Editorial",
       "dashboard": "Transparent",

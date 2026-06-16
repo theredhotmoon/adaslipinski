@@ -4,12 +4,12 @@ import type { Translator } from '../../i18n/ui'
 import FaqAccordion from '../islands/FaqAccordion.vue'
 import CmsImage from '../CmsImage.astro'
 
-interface Props { site: SiteContent; t: Translator }
-const { site, t } = Astro.props
+interface Props { site: SiteContent; t: Translator; showPartners?: boolean; showFaq?: boolean }
+const { site, t, showPartners = true, showFaq = true } = Astro.props
 ---
 
 <section class="sec" id="faq">
-  {site.partners.length > 0 && (
+  {showPartners && site.partners.length > 0 && (
     <div class="partners">
       <p class="block-title">{t('home.partners')}</p>
       <ul class="logos">
@@ -22,10 +22,14 @@ const { site, t } = Astro.props
     </div>
   )}
 
-  <p class="kicker">{t('home.faqTitle')}</p>
-  <!-- FAQ questions/answers are in the SSR HTML below; the island only adds the
-       expand/collapse behaviour, so the text is fully indexable pre-hydration. -->
-  <FaqAccordion client:visible items={site.faq} />
+  {showFaq && (
+    <>
+      <p class="kicker">{t('home.faqTitle')}</p>
+      <!-- FAQ questions/answers are in the SSR HTML below; the island only adds the
+           expand/collapse behaviour, so the text is fully indexable pre-hydration. -->
+      <FaqAccordion client:visible items={site.faq} />
+    </>
+  )}
 </section>
 
 <style>

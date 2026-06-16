@@ -24,6 +24,11 @@ const site = await fetchSite(lang) // build-time fetch → baked into static HTM
 
 const { child, foundation: fo } = site
 
+// Admin-controlled section visibility (from /cms/site → settings.hiddenSections).
+const hidden = new Set(site.settings?.hiddenSections ?? [])
+const show = (key: string) => !hidden.has(key)
+const showCommunity = show('partners') || show('faq')
+
 // SEO
 const title = `${child.heroTitle} | Adaś Lipiński`
 const description = child.heroSubtitle
@@ -71,12 +76,12 @@ const donateStrings = {
 
 <BaseLayout locale={lang} title={title} description={description} image={child.heroImageUrl} jsonLd={ngoJsonLd} {t} {site}>
   <Hero {site} {t} />
-  <Budget {site} {t} />
-  <Progress {site} {t} locale={lang} />
-  <Expenses {site} {t} />
-  <Tax {site} {t} />
-  <Foundation {site} {t} />
-  <Community {site} {t} />
+  {show('budget') && <Budget {site} {t} />}
+  {show('progress') && <Progress {site} {t} locale={lang} />}
+  {show('expenses') && <Expenses {site} {t} />}
+  {show('tax') && <Tax {site} {t} />}
+  {show('foundation') && <Foundation {site} {t} />}
+  {showCommunity && <Community {site} {t} showPartners={show('partners')} showFaq={show('faq')} />}
 
   <!-- Sticky donate bar: chrome → hydrate when idle. -->
   <div class="donate-bar">

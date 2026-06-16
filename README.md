@@ -60,7 +60,8 @@ cp .env.example .env
 composer install
 php artisan key:generate
 php artisan migrate
-php artisan passport:keys        # generates the JWT signing keys (gitignored)
+php artisan passport:keys              # generates the JWT signing keys (gitignored)
+php artisan passport:client --personal # personal access client (login's createToken needs it)
 
 # Allow yourself into the CMS — edit .env:
 #   ADMIN_EMAILS=you@example.com

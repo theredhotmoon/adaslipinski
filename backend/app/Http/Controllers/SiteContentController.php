@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\{Beneficiary, BudgetItem, DonationAmount, Expense, FaqItem, Foundation, GalleryImage, Milestone, Partner, ProgressPost, Testimonial, YearSummary};
+use App\Support\SiteSettings;
 use Illuminate\Http\JsonResponse;
 
 class SiteContentController extends Controller
@@ -132,6 +133,10 @@ class SiteContentController extends Controller
                 'id'  => $g->id,
                 'url' => $g->image?->url,
             ]),
+
+            // Admin-controlled settings. `layout` drives the SPA's desktop layout;
+            // `hiddenSections` lists public sections hidden on the Astro site.
+            'settings' => SiteSettings::current(),
         ]);
     }
 }

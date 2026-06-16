@@ -1,5 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { api } from '@/lib/api'
+import type { LayoutId } from '@/features/fundraising/types'
 
 const QK = ['cms-site']
 
@@ -8,6 +9,33 @@ function useInvalidating<T>(fn: (data: T) => Promise<unknown>) {
   return useMutation({
     mutationFn: fn,
     onSuccess: () => qc.invalidateQueries({ queryKey: QK }),
+  })
+}
+
+// ── Site settings (layout + hidden sections) ───────────────────────────────────
+export interface AdminSettings {
+  layout: LayoutId
+  hiddenSections: string[]
+  availableLayouts: LayoutId[]
+  availableSections: string[]
+}
+
+export const useSiteSettings = () =>
+  useQuery({
+    queryKey: ['admin-settings'],
+    queryFn: () => api.get<AdminSettings>('/admin/settings').then((r) => r.data),
+  })
+
+export const useUpdateSiteSettings = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data: { layout?: LayoutId; hiddenSections?: string[] }) =>
+      api.put('/admin/settings', data).then((r) => r.data),
+    onSuccess: () => {
+      // Refresh both the admin panel's view and the live site content.
+      qc.invalidateQueries({ queryKey: ['admin-settings'] })
+      qc.invalidateQueries({ queryKey: QK })
+    },
   })
 }
 

@@ -7,6 +7,13 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- **Admin Site Settings** — a settings panel (gear in the admin bar) where admins choose
+  the active **desktop layout** (Classic / Editorial / Dashboard) and **hide individual
+  public sections** (budget, updates, expenses, tax, foundation, partners, FAQ). Stored
+  server-side via `GET|PUT /admin/settings` and exposed through a `settings` block on
+  `/cms/site`. The layout drives the SPA desktop (the visitor switcher is now admin-only
+  preview); section hiding applies to the public Astro site, while the SPA stays the full
+  editing surface. Covered by feature tests.
 - **Server-rendered public website** (`web/`) — a new Astro app that renders the
   public site to complete, SEO-indexable HTML while keeping the Laravel CMS and the
   Vue admin SPA untouched. It fetches `/cms/site?lang=` at build time and reuses the
@@ -93,6 +100,9 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
   the environment instead of hardcoded values.
 
 ### Fixed
+- Admin login returned **500 on a fresh stack** because no Passport personal access
+  client existed (`createToken` requires one). The Docker entrypoint now creates it
+  (guarded against duplicates) and the README quickstart documents the local step.
 - Admin route-model binding for the `faq` and `progress` API resources: the
   controller parameters (`$faqItem`, `$progressPost`) didn't match the route
   parameter names, so inline FAQ/progress edits and deletes silently hit an
