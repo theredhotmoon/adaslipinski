@@ -32,10 +32,14 @@ test.describe.serial('site settings', () => {
     await checkbox.click()
     await saveSettings(page)
 
-    // Reopen — the staged change should have been committed and reloaded.
+    // Reopen — the staged change should have been committed and reloaded. Use a
+    // web-first assertion so it waits for the post-save refetch to settle the
+    // checkbox, rather than reading once (the modal can reopen on stale query data
+    // for a tick before the invalidated settings query refetches).
     await openSettings(page)
     const reopened = page.locator(`[data-testid="${testid}"]`)
-    expect(await reopened.isChecked()).toBe(!wasChecked)
+    if (wasChecked) await expect(reopened).not.toBeChecked()
+    else await expect(reopened).toBeChecked()
 
     // Restore.
     await reopened.click()
