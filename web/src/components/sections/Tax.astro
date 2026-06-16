@@ -1,0 +1,45 @@
+---
+import type { SiteContent } from '../../lib/types'
+import type { Translator } from '../../i18n/ui'
+
+interface Props { site: SiteContent; t: Translator }
+const { site, t } = Astro.props
+const fo = site.foundation
+---
+
+<section class="sec" id="tax">
+  <p class="kicker">{t('tax.kicker')}</p>
+  <h2 class="h2">{t('tax.title')}</h2>
+  <p class="sub">{t('tax.subtitle', { name: site.child.name })}</p>
+
+  <div class="card">
+    <div class="field"><span class="f-cap">{t('tax.krsNumber')}</span><span class="f-val mono">{fo.krs}</span></div>
+    <div class="field hot"><span class="f-cap">{t('tax.celField')}</span><span class="f-val">{fo.cel}</span></div>
+  </div>
+
+  <ol class="steps">
+    <li><strong>{t('tax.step1Title')}</strong><br />{t('tax.step1Body')}</li>
+    <li><strong>{t('tax.step2Title', { krs: fo.krs })}</strong><br />{t('tax.step2Body', { foundation: fo.name })}</li>
+    <li><strong>{t('tax.step3Title', { purpose: fo.cel })}</strong><br />{t('tax.step3Body', { name: site.child.name })}</li>
+  </ol>
+
+  <p class="info" set:html={t('tax.infoNote')} />
+</section>
+
+<style>
+  .sec { padding: 28px 18px 8px; }
+  .kicker { margin: 0 0 6px; font-size: 12.5px; font-weight: 800; color: var(--color-fr-accent-ink); background: var(--color-fr-accent); display: inline-block; padding: 3px 10px; border-radius: 999px; }
+  .h2 { margin: 8px 0 6px; font-size: 23px; font-weight: 800; color: var(--color-fr-ink); }
+  .sub { margin: 0 0 16px; font-size: 14px; color: var(--color-fr-ink-soft); line-height: 1.5; }
+  .card { background: var(--color-fr-surface); border: 1px solid var(--color-fr-line); border-radius: 18px; padding: 6px 14px; margin-bottom: 16px; }
+  .field { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--color-fr-line); }
+  .field:last-child { border-bottom: none; }
+  .field.hot .f-val { color: var(--color-fr-primary); font-weight: 800; }
+  .f-cap { font-size: 12.5px; color: var(--color-fr-ink-soft); }
+  .f-val { font-weight: 700; color: var(--color-fr-ink); text-align: right; }
+  .f-val.mono { font-family: ui-monospace, Menlo, monospace; }
+  .steps { margin: 0 0 16px; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .steps li { font-size: 13.5px; color: var(--color-fr-ink-soft); line-height: 1.5; }
+  .steps strong { color: var(--color-fr-ink); }
+  .info { font-size: 12.5px; color: var(--color-fr-ink-soft); line-height: 1.55; background: var(--color-fr-accent); border-radius: 14px; padding: 12px 14px; }
+</style>

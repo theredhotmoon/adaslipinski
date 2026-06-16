@@ -1,0 +1,55 @@
+---
+import type { SiteContent } from '../../lib/types'
+import type { Translator } from '../../i18n/ui'
+
+interface Props { site: SiteContent; t: Translator }
+const { site, t } = Astro.props
+const fo = site.foundation
+---
+
+<section class="sec" id="foundation">
+  <p class="kicker">{t('foundation.kicker')}</p>
+  <h2 class="h2">{t('foundation.title')}</h2>
+  <p class="sub">{t('foundation.subtitle')}</p>
+
+  <p class="shield" set:html={t('foundation.shieldNote', { name: site.child.name })} />
+
+  <p class="block-title">{t('foundation.transferAccounts')}</p>
+  <ul class="accounts">
+    {fo.accounts.map((a) => (
+      <li class="acct"><span class="cur">{a.cur}</span><span class="iban">{a.iban}</span></li>
+    ))}
+  </ul>
+
+  <div class="reg">
+    <div><span class="r-cap">KRS</span><span class="r-val mono">{fo.krs}</span></div>
+    <div><span class="r-cap">NIP</span><span class="r-val mono">{fo.nip}</span></div>
+    <div><span class="r-cap">REGON</span><span class="r-val mono">{fo.regon}</span></div>
+  </div>
+
+  {fo.links.length > 0 && (
+    <ul class="links">
+      {fo.links.map((l) => <li><a href={l.href}>{l.label} →</a></li>)}
+    </ul>
+  )}
+</section>
+
+<style>
+  .sec { padding: 28px 18px 8px; }
+  .kicker { margin: 0 0 6px; font-size: 12.5px; font-weight: 800; color: var(--color-fr-primary); text-transform: uppercase; letter-spacing: 0.04em; }
+  .h2 { margin: 0 0 6px; font-size: 23px; font-weight: 800; color: var(--color-fr-ink); }
+  .sub { margin: 0 0 16px; font-size: 14px; color: var(--color-fr-ink-soft); line-height: 1.5; }
+  .shield { font-size: 13px; line-height: 1.55; color: var(--color-fr-ink-soft); background: var(--color-fr-primary-soft); border-radius: 16px; padding: 14px; margin: 0 0 18px; }
+  .block-title { margin: 0 0 10px; font-weight: 800; font-size: 14px; color: var(--color-fr-ink); }
+  .accounts { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .acct { display: flex; gap: 10px; align-items: center; padding: 11px 12px; background: var(--color-fr-surface-alt); border: 1px solid var(--color-fr-line); border-radius: 14px; }
+  .cur { font-weight: 800; font-size: 12px; color: var(--color-fr-primary); flex-shrink: 0; width: 34px; }
+  .iban { font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: var(--color-fr-ink); word-break: break-all; }
+  .reg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .reg > div { padding: 10px; background: var(--color-fr-surface); border: 1px solid var(--color-fr-line); border-radius: 12px; text-align: center; }
+  .r-cap { display: block; font-size: 11px; color: var(--color-fr-ink-soft); margin-bottom: 3px; }
+  .r-val { font-size: 12.5px; font-weight: 700; color: var(--color-fr-ink); }
+  .r-val.mono { font-family: ui-monospace, Menlo, monospace; }
+  .links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .links a { font-size: 13px; font-weight: 700; color: var(--color-fr-primary); }
+</style>

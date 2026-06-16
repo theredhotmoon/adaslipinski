@@ -1,0 +1,84 @@
+---
+import '../styles/global.css'
+import BaseHead from '../components/BaseHead.astro'
+import { LOCALES, type Locale } from '../i18n/config'
+import type { Translator } from '../i18n/ui'
+import type { SiteContent } from '../lib/types'
+
+interface Props {
+  locale: Locale
+  path?: string
+  title: string
+  description: string
+  image?: string
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+  t: Translator
+  site: SiteContent
+}
+
+const { locale, path = '', title, description, image, jsonLd, t, site } = Astro.props
+
+// Language switcher = plain anchors → zero JS, fully crawlable. Swap only the locale
+// segment of the current path.
+const sub = path ? `/${path}` : ''
+const langLinks = LOCALES.map((l) => ({ code: l, href: `/${l}${sub}`, active: l === locale }))
+
+const fo = site.foundation
+const year = new Date().getFullYear()
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <BaseHead {locale} {path} {title} {description} {image} {jsonLd} />
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar">
+        <a class="brand" href={`/${locale}`}>💛 {site.child.name}</a>
+        <nav class="lang" aria-label={t('lang.switch')}>
+          {langLinks.map((l) => (
+            <a href={l.href} class={l.active ? 'on' : ''} aria-current={l.active ? 'true' : undefined}>
+              {l.code.toUpperCase()}
+            </a>
+          ))}
+        </nav>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer class="footer">
+        <p class="f-name">{fo.name}</p>
+        <p class="f-meta">OPP · KRS {fo.krs} · NIP {fo.nip}</p>
+        <p class="f-meta">{t('trust.title')}</p>
+        <p class="f-copy">© {year} {site.child.fullName} · {fo.email}</p>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<style>
+  .page { max-width: 460px; margin: 0 auto; min-height: 100svh; display: flex; flex-direction: column; }
+  @media (min-width: 1024px) { .page { max-width: 720px; } }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    background: color-mix(in oklch, var(--color-fr-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .brand { font-weight: 800; font-size: 16px; color: var(--color-fr-ink); text-decoration: none; }
+  .lang { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--color-fr-surface-alt); border: 1px solid var(--color-fr-line); }
+  .lang a { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--color-fr-ink-soft); text-decoration: none; }
+  .lang a.on { background: var(--color-fr-primary); color: var(--color-fr-primary-ink); }
+
+  main { flex: 1; }
+
+  .footer { padding: 28px 18px 120px; text-align: center; border-top: 1px solid var(--color-fr-line); margin-top: 32px; }
+  .f-name { margin: 0 0 4px; font-weight: 800; font-size: 13.5px; color: var(--color-fr-ink); }
+  .f-meta { margin: 2px 0; font-size: 12px; color: var(--color-fr-ink-soft); line-height: 1.5; }
+  .f-copy { margin: 10px 0 0; font-size: 11.5px; color: var(--color-fr-ink-soft); }
+</style>
