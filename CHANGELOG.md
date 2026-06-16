@@ -9,7 +9,9 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
 ### Added
 - **Admin Site Settings** — a settings panel (gear in the admin bar) where admins choose
   the active **desktop layout** (Classic / Editorial / Dashboard) and **hide individual
-  public sections** (budget, updates, expenses, tax, foundation, partners, FAQ). Stored
+  public sections** (story, budget, updates, expenses, tax, testimonials, foundation,
+  partners, FAQ, gallery). The Astro site gained story/milestones, testimonials, and
+  gallery sections so they can be shown or hidden too. Stored
   server-side via `GET|PUT /admin/settings` and exposed through a `settings` block on
   `/cms/site`. The layout drives the SPA desktop (the visitor switcher is now admin-only
   preview); section hiding applies to the public Astro site, while the SPA stays the full

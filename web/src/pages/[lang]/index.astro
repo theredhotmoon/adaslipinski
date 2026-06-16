@@ -4,12 +4,15 @@ import { useT } from '../../i18n/ui'
 import { fetchSite } from '../../lib/cms'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import Hero from '../../components/sections/Hero.astro'
+import About from '../../components/sections/About.astro'
 import Budget from '../../components/sections/Budget.astro'
 import Progress from '../../components/sections/Progress.astro'
 import Expenses from '../../components/sections/Expenses.astro'
 import Tax from '../../components/sections/Tax.astro'
+import Testimonials from '../../components/sections/Testimonials.astro'
 import Foundation from '../../components/sections/Foundation.astro'
 import Community from '../../components/sections/Community.astro'
+import Gallery from '../../components/sections/Gallery.astro'
 import DonateModal from '../../components/islands/DonateModal.vue'
 import DonateTrigger from '../../components/islands/DonateTrigger.vue'
 
@@ -76,12 +79,15 @@ const donateStrings = {
 
 <BaseLayout locale={lang} title={title} description={description} image={child.heroImageUrl} jsonLd={ngoJsonLd} {t} {site}>
   <Hero {site} {t} />
+  {show('about') && <About {site} {t} />}
   {show('budget') && <Budget {site} {t} />}
   {show('progress') && <Progress {site} {t} locale={lang} />}
   {show('expenses') && <Expenses {site} {t} />}
   {show('tax') && <Tax {site} {t} />}
+  {show('testimonials') && site.testimonials.length > 0 && <Testimonials {site} {t} />}
   {show('foundation') && <Foundation {site} {t} />}
   {showCommunity && <Community {site} {t} showPartners={show('partners')} showFaq={show('faq')} />}
+  {show('gallery') && site.gallery.length > 0 && <Gallery {site} {t} />}
 
   <!-- Sticky donate bar: chrome → hydrate when idle. -->
   <div class="donate-bar">

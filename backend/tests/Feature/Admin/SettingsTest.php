@@ -58,6 +58,22 @@ class SettingsTest extends TestCase
             ->assertJsonPath('hiddenSections', ['budget', 'faq']);
     }
 
+    public function test_newly_added_sections_are_toggleable(): void
+    {
+        Passport::actingAs(User::factory()->create());
+
+        $this->getJson('/api/admin/settings')
+            ->assertOk()
+            ->assertJsonPath('availableSections', [
+                'about', 'budget', 'progress', 'expenses', 'tax',
+                'testimonials', 'foundation', 'partners', 'faq', 'gallery',
+            ]);
+
+        $this->putJson('/api/admin/settings', ['hiddenSections' => ['about', 'gallery', 'testimonials']])
+            ->assertOk()
+            ->assertJsonPath('hiddenSections', ['about', 'testimonials', 'gallery']);
+    }
+
     public function test_update_rejects_an_invalid_layout(): void
     {
         Passport::actingAs(User::factory()->create());

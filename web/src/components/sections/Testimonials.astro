@@ -1,0 +1,41 @@
+---
+import type { SiteContent } from '../../lib/types'
+import type { Translator } from '../../i18n/ui'
+import CmsImage from '../CmsImage.astro'
+
+interface Props { site: SiteContent; t: Translator }
+const { site, t } = Astro.props
+---
+
+<section class="sec" id="testimonials">
+  <p class="kicker">{t('home.testimonials')}</p>
+  <div class="quotes">
+    {site.testimonials.map((tm) => (
+      <figure class="quote">
+        <blockquote class="text">“{tm.quote}”</blockquote>
+        <figcaption class="who">
+          {tm.photoUrl && (
+            <CmsImage class="avatar" src={tm.photoUrl} alt={tm.authorName} widths={[48, 96]} sizes="48px" />
+          )}
+          <span class="meta">
+            <span class="name">{tm.authorName}</span>
+            <span class="role">{tm.authorRole}</span>
+          </span>
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+</section>
+
+<style>
+  .sec { padding: 28px 18px 8px; }
+  .kicker { margin: 0 0 12px; font-size: 12.5px; font-weight: 800; color: var(--color-fr-primary); text-transform: uppercase; letter-spacing: 0.04em; }
+  .quotes { display: flex; flex-direction: column; gap: 12px; }
+  .quote { margin: 0; padding: 16px; background: var(--color-fr-surface); border: 1px solid var(--color-fr-line); border-radius: 18px; }
+  .text { margin: 0 0 12px; font-size: 15px; line-height: 1.55; color: var(--color-fr-ink); font-style: italic; }
+  .who { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 40px; height: 40px; border-radius: 999px; object-fit: cover; flex-shrink: 0; }
+  .meta { display: flex; flex-direction: column; }
+  .name { font-weight: 800; font-size: 13.5px; color: var(--color-fr-ink); }
+  .role { font-size: 12px; color: var(--color-fr-ink-soft); }
+</style>
