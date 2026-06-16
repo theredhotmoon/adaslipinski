@@ -21,6 +21,12 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
   hook (`DEPLOY_HOOK_URL`) to rebuild & redeploy the public site. Disabled by default
   (no-op until the URL is set); a burst of edits coalesces into one rebuild. Covered
   by feature tests.
+- CI coverage for the public site: a **`web` job** runs `astro check` + a full
+  `astro build` (exercising the bundled-fallback path, since the API isn't reachable
+  in CI), and a **`deploy-web` job** pings the host build hook on pushes to `main`
+  after the suite is green. The deploy job reads the `WEB_DEPLOY_HOOK_URL` Actions
+  secret and skips cleanly until it's set, so a *code* change to `web/` redeploys the
+  site (the backend `DEPLOY_HOOK_URL` covers *content* changes).
 - Image upload for the **About gallery** and **testimonial photos** — completing
   image upload across every slot. New `gallery_images` table + `GalleryImage`
   model + admin CRUD (`/admin/gallery`); the About "everyday life" grid renders
@@ -78,6 +84,9 @@ this project aims to follow [Semantic Versioning](https://semver.org/).
   seeded for budget, milestones, progress, expenses, FAQ, hero, and testimonial.
 
 ### Changed
+- CI: the `web` job runs on Node 22 (Astro 6 requires `>=22.12`), and
+  `actions/checkout` + `actions/setup-node` bumped to v5 (Node 24 action runtime)
+  to clear the Node 20 deprecation warning.
 - CORS now defaults to the configured `FRONTEND_URL` instead of `*`
   (override via `CORS_ALLOWED_ORIGINS`).
 - `docker-compose.yml` reads `APP_KEY`, `FRONTEND_URL`, and `ADMIN_EMAILS` from
